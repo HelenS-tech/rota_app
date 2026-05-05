@@ -29,6 +29,18 @@ const shifts = [
   { id: 28, week: 4, date: "Sat 25", role: "Pizza", claimedBy: null }
 ];
 
+let selectedStaff = "";
+
+const staffNames = [
+  "Helen",
+  "Richard",
+  "Roxy",
+  "Rachael",
+  "Jes",
+  "Harvey",
+  "Sharon"
+];
+
 const shiftsDiv = document.getElementById("shifts");
 
 function renderShifts() {
@@ -78,7 +90,7 @@ function renderShifts() {
           <p>${shift.role}</p>
           <p>${shift.claimedBy ? "Claimed by: " + shift.claimedBy : "Available"}</p>
           ${
-            shift.claimedBy === "You"
+            shift.claimedBy === selectedStaff
     ? `<button onclick="cancelShift(${shift.id})">Cancel Shift</button>`
     : !shift.claimedBy
       ? `<button onclick="claimShift(${shift.id})">Claim Shift</button>`
@@ -96,14 +108,21 @@ function renderShifts() {
   });
 }
 function claimShift(id) {
+  if (!selectedStaff) {
+    alert("Please choose your name first.");
+    return;
+  }
+
   const shift = shifts.find(s => s.id === id);
 
   if (!shift.claimedBy) {
-    shift.claimedBy = "You";
+    shift.claimedBy = selectedStaff;
   }
 
   renderShifts();
 }
+
+  renderShifts();
 
 function cancelShift(id) {
   const shift = shifts.find(s => s.id === id);
@@ -114,5 +133,22 @@ function cancelShift(id) {
 
   renderShifts();
 }
+const staffSelect = document.getElementById("staffSelect");
+
+staffNames.forEach(name => {
+  const option = document.createElement("option");
+  option.value = name;
+  option.textContent = name;
+  staffSelect.appendChild(option);
+});
+
+staffSelect.addEventListener("change", function () {
+  selectedStaff = staffSelect.value;
+});
+
+staffSelect.addEventListener("change", function () {
+  selectedStaff = staffSelect.value;
+  renderShifts();
+});
 
 renderShifts();
