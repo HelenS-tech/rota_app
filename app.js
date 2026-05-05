@@ -33,6 +33,7 @@ let selectedStaff = "";
 
 const staffNames = [
   "Helen",
+  "Elaine",
   "Richard",
   "Roxy",
   "Rachael",
@@ -40,6 +41,17 @@ const staffNames = [
   "Harvey",
   "Sharon"
 ];
+
+const staffPins = {
+  Helen: "1234",
+  Elaine: "5566",
+  Richard: "2345",
+  Roxy: "3456",
+  Rachael: "4567",
+  Jes: "6587",
+  Harvey: "9988",
+  Sharon: "2233"  
+};
 
 const shiftsDiv = document.getElementById("shifts");
 
@@ -122,17 +134,16 @@ function claimShift(id) {
   renderShifts();
 }
 
-  renderShifts();
-
 function cancelShift(id) {
   const shift = shifts.find(s => s.id === id);
 
-  if (shift.claimedBy) {
+  if (shift.claimedBy === selectedStaff) {
     shift.claimedBy = null;
   }
 
   renderShifts();
 }
+
 const staffSelect = document.getElementById("staffSelect");
 
 staffNames.forEach(name => {
@@ -143,12 +154,21 @@ staffNames.forEach(name => {
 });
 
 staffSelect.addEventListener("change", function () {
-  selectedStaff = staffSelect.value;
-});
+  const chosenName = staffSelect.value;
 
-staffSelect.addEventListener("change", function () {
-  selectedStaff = staffSelect.value;
-  renderShifts();
+  if (!chosenName) return;
+
+  const enteredPin = prompt("Enter PIN for " + chosenName);
+
+  if (enteredPin === staffPins[chosenName]) {
+    selectedStaff = chosenName;
+    renderShifts();
+  } else {
+    alert("Incorrect PIN");
+    staffSelect.value = "";
+    selectedStaff = "";
+    renderShifts();
+  }
 });
 
 renderShifts();
