@@ -4,7 +4,17 @@ let currentMonth = 5; // June = 5
 function generateShifts(year, month) {
   const shifts = [];
   let id = 1;
-  const extraMonday = 1;
+  let extraMonday = null;
+
+for (let day = 1; day <= 7; day++) {
+  const date = new Date(year, month, day);
+  const dayName = date.toLocaleDateString("en-GB", { weekday: "short" });
+
+  if (dayName === "Mon") {
+    extraMonday = day;
+    break;
+  }
+}
 
   for (let day = 1; day <= 31; day++) {
     const date = new Date(year, month, day);
@@ -24,7 +34,7 @@ function generateShifts(year, month) {
       });
     }
 
-    if (["Thu", "Fri"].includes(dayName) || day === extraMonday) {
+    if (["Thu", "Fri", "Sat"].includes(dayName) || day === extraMonday) {
       shifts.push({
         id: id++,
         week: Math.ceil(day / 7),
@@ -76,6 +86,40 @@ function renderShifts() {
 
   monthTitle.textContent = `${monthName} ${currentYear} Rota`;
   shiftsDiv.appendChild(monthTitle);
+
+  const controls = document.createElement("div");
+  controls.className = "month-controls";
+
+  controls.innerHTML = `
+    <button id="prevMonth">Previous Month</button>
+    <button id="nextMonth">Next Month</button>
+  `;
+
+  shiftsDiv.appendChild(controls);
+
+  document.getElementById("nextMonth").addEventListener("click", () => {
+    currentMonth++;
+
+    if (currentMonth > 11) {
+      currentMonth = 0;
+      currentYear++;
+    }
+
+    shifts = generateShifts(currentYear, currentMonth);
+    renderShifts();
+  });
+
+  document.getElementById("prevMonth").addEventListener("click", () => {
+    currentMonth--;
+
+    if (currentMonth < 0) {
+      currentMonth = 11;
+      currentYear--;
+    }
+
+    shifts = generateShifts(currentYear, currentMonth);
+    renderShifts();
+  });
 
   const groupedByWeek = {};
 
@@ -181,30 +225,6 @@ staffSelect.addEventListener("change", function () {
     selectedStaff = "";
     renderShifts();
   }
-});
-
-document.getElementById("nextMonth").addEventListener("click", () => {
-  currentMonth++;
-
-  if (currentMonth > 11) {
-    currentMonth = 0;
-    currentYear++;
-  }
-
-  shifts = generateShifts(currentYear, currentMonth);
-  renderShifts();
-});
-
-document.getElementById("prevMonth").addEventListener("click", () => {
-  currentMonth--;
-
-  if (currentMonth < 0) {
-    currentMonth = 11;
-    currentYear--;
-  }
-
-  shifts = generateShifts(currentYear, currentMonth);
-  renderShifts();
 });
 
 renderShifts();
