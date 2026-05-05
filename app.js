@@ -1,34 +1,44 @@
-const shifts = [
-  {  id: 1, week: 1, date: "Wed 1", role: "Bar", claimedBy: null },
-  { id: 2, week: 1, date: "Thu 2", role: "Bar", claimedBy: null },
-  { id: 3, week: 1, date: "Thu 2", role: "Pizza", claimedBy: null },
-  { id: 4, week: 1, date: "Fri 3", role: "Bar", claimedBy: null },
-  { id: 5, week: 1, date: "Fri 3", role: "Pizza", claimedBy: null },
-  { id: 6, week: 1, date: "Sat 4", role: "Bar", claimedBy: null },
-  { id: 7, week: 1, date: "Sat 4", role: "Pizza", claimedBy: null },
-  {  id: 8, week: 2, date: "Wed 8", role: "Bar", claimedBy: null },
-  { id: 9, week: 2, date: "Thu 9", role: "Bar", claimedBy: null },
-  { id: 10, week: 2, date: "Thu 9", role: "Pizza", claimedBy: null },
-  { id: 11, week: 2, date: "Fri 10", role: "Bar", claimedBy: null },
-  { id: 12, week: 2, date: "Fri 10", role: "Pizza", claimedBy: null },
-  { id: 13, week: 2, date: "Sat 11", role: "Bar", claimedBy: null },
-  { id: 14, week: 2, date: "Sat 11", role: "Pizza", claimedBy: null },
-  {  id: 15, week: 3, date: "Wed 15", role: "Bar", claimedBy: null },
-  { id: 16, week: 3, date: "Thu 16", role: "Bar", claimedBy: null },
-  { id: 17, week: 3, date: "Thu 16", role: "Pizza", claimedBy: null },
-  { id: 18, week: 3, date: "Fri 17", role: "Bar", claimedBy: null },
-  { id: 19, week: 3, date: "Fri 17", role: "Pizza", claimedBy: null },
-  { id: 20, week: 3, date: "Sat 18", role: "Bar", claimedBy: null },
-  { id: 21, week: 3, date: "Sat 18", role: "Pizza", claimedBy: null },
-  {  id: 22, week: 4, date: "Wed 22", role: "Bar", claimedBy: null },
-  { id: 23, week: 4, date: "Thu 23", role: "Bar", claimedBy: null },
-  { id: 24, week:4, date: "Thu 23", role: "Pizza", claimedBy: null },
-  { id: 25, week: 4, date: "Fri 24", role: "Bar", claimedBy: null },
-  { id: 26, week: 4, date: "Fri 24", role: "Pizza", claimedBy: null },
-  { id: 27, week: 4, date: "Sat 25", role: "Bar", claimedBy: null },
-  { id: 28, week: 4, date: "Sat 25", role: "Pizza", claimedBy: null }
-];
+let currentYear = 2026;
+let currentMonth = 5; // June = 5
 
+function generateShifts(year, month) {
+  const shifts = [];
+  let id = 1;
+  const extraMonday = 1;
+
+  for (let day = 1; day <= 31; day++) {
+    const date = new Date(year, month, day);
+
+    if (date.getMonth() !== month) break;
+
+    const dayName = date.toLocaleDateString("en-GB", { weekday: "short" });
+    const label = `${dayName} ${day}`;
+
+    if (["Wed", "Thu", "Fri", "Sat"].includes(dayName) || day === extraMonday) {
+      shifts.push({
+        id: id++,
+        week: Math.ceil(day / 7),
+        date: label,
+        role: "Bar",
+        claimedBy: null
+      });
+    }
+
+    if (["Thu", "Fri"].includes(dayName) || day === extraMonday) {
+      shifts.push({
+        id: id++,
+        week: Math.ceil(day / 7),
+        date: label,
+        role: "Pizza",
+        claimedBy: null
+      });
+    }
+  }
+
+  return shifts;
+}
+
+let shifts = generateShifts(currentYear, currentMonth);
 let selectedStaff = "";
 
 const staffNames = [
@@ -50,64 +60,67 @@ const staffPins = {
   Rachael: "4567",
   Jes: "6587",
   Harvey: "9988",
-  Sharon: "2233"  
+  Sharon: "2233"
 };
 
 const shiftsDiv = document.getElementById("shifts");
+const staffSelect = document.getElementById("staffSelect");
 
 function renderShifts() {
   shiftsDiv.innerHTML = "";
 
   const monthTitle = document.createElement("h2");
-  monthTitle.textContent = "Monthly Rota";
+  const monthName = new Date(currentYear, currentMonth).toLocaleString("en-GB", {
+    month: "long"
+  });
+
+  monthTitle.textContent = `${monthName} ${currentYear} Rota`;
   shiftsDiv.appendChild(monthTitle);
 
   const groupedByWeek = {};
 
-  // Group by week first
   shifts.forEach(shift => {
     if (!groupedByWeek[shift.week]) {
       groupedByWeek[shift.week] = [];
     }
+
     groupedByWeek[shift.week].push(shift);
   });
 
-  // Loop through weeks
   Object.keys(groupedByWeek).forEach(week => {
     const weekDiv = document.createElement("div");
     weekDiv.className = "week-row";
-
     weekDiv.innerHTML = `<h3>Week ${week}</h3>`;
 
     const groupedByDate = {};
 
-    // Group inside each week by date
     groupedByWeek[week].forEach(shift => {
       if (!groupedByDate[shift.date]) {
         groupedByDate[shift.date] = [];
       }
+
       groupedByDate[shift.date].push(shift);
     });
 
     Object.keys(groupedByDate).forEach(date => {
       const dayCard = document.createElement("div");
       dayCard.className = "day-card";
-
       dayCard.innerHTML = `<h4>${date}</h4>`;
 
       groupedByDate[date].forEach(shift => {
         const shiftSlot = document.createElement("div");
+        shiftSlot.className = "shift-slot";
 
         shiftSlot.innerHTML = `
           <p>${shift.role}</p>
           <p>${shift.claimedBy ? "Claimed by: " + shift.claimedBy : "Available"}</p>
           ${
             shift.claimedBy === selectedStaff
-    ? `<button onclick="cancelShift(${shift.id})">Cancel Shift</button>`
-    : !shift.claimedBy
-      ? `<button onclick="claimShift(${shift.id})">Claim Shift</button>`
-      : `<p>Claimed</p>`
-}
+              ? `<button onclick="cancelShift(${shift.id})">Cancel Shift</button>`
+              : !shift.claimedBy
+                ? `<button onclick="claimShift(${shift.id})">Claim Shift</button>`
+                : `<p>Claimed</p>`
+          }
         `;
 
         dayCard.appendChild(shiftSlot);
@@ -119,6 +132,7 @@ function renderShifts() {
     shiftsDiv.appendChild(weekDiv);
   });
 }
+
 function claimShift(id) {
   if (!selectedStaff) {
     alert("Please choose your name first.");
@@ -144,8 +158,6 @@ function cancelShift(id) {
   renderShifts();
 }
 
-const staffSelect = document.getElementById("staffSelect");
-
 staffNames.forEach(name => {
   const option = document.createElement("option");
   option.value = name;
@@ -169,6 +181,30 @@ staffSelect.addEventListener("change", function () {
     selectedStaff = "";
     renderShifts();
   }
+});
+
+document.getElementById("nextMonth").addEventListener("click", () => {
+  currentMonth++;
+
+  if (currentMonth > 11) {
+    currentMonth = 0;
+    currentYear++;
+  }
+
+  shifts = generateShifts(currentYear, currentMonth);
+  renderShifts();
+});
+
+document.getElementById("prevMonth").addEventListener("click", () => {
+  currentMonth--;
+
+  if (currentMonth < 0) {
+    currentMonth = 11;
+    currentYear--;
+  }
+
+  shifts = generateShifts(currentYear, currentMonth);
+  renderShifts();
 });
 
 renderShifts();
