@@ -182,7 +182,6 @@ function renderShifts() {
 
   const controls = document.createElement("div");
   controls.className = "month-controls";
-
   controls.innerHTML = `
     <button id="prevMonth">Previous Month</button>
     <button id="nextMonth">Next Month</button>
@@ -191,12 +190,12 @@ function renderShifts() {
 
   shiftsDiv.appendChild(controls);
 
-  document.getElementById("nextMonth").addEventListener("click", () => {
-    currentMonth++;
+  document.getElementById("prevMonth").addEventListener("click", () => {
+    currentMonth--;
 
-    if (currentMonth > 11) {
-      currentMonth = 0;
-      currentYear++;
+    if (currentMonth < 0) {
+      currentMonth = 11;
+      currentYear--;
     }
 
     selectedWeek = 1;
@@ -204,12 +203,12 @@ function renderShifts() {
     renderShifts();
   });
 
-  document.getElementById("prevMonth").addEventListener("click", () => {
-    currentMonth--;
+  document.getElementById("nextMonth").addEventListener("click", () => {
+    currentMonth++;
 
-    if (currentMonth < 0) {
-      currentMonth = 11;
-      currentYear--;
+    if (currentMonth > 11) {
+      currentMonth = 0;
+      currentYear++;
     }
 
     selectedWeek = 1;
@@ -262,6 +261,7 @@ function renderShifts() {
       Object.keys(groupedByDate).forEach(date => {
         const dayCard = document.createElement("div");
         dayCard.className = "day-card";
+
         const dayEvent = groupedByDate[date].find(s => s.event)?.event;
 
         dayCard.innerHTML = `
@@ -279,28 +279,55 @@ function renderShifts() {
 
           if (shift.claimedBy.length > 0) {
             shiftSlot.classList.add("claimed-shift");
-            }
+          }
+
+          if (shift.claimedBy.length >= shift.capacity) {
+            shiftSlot.classList.add("full");
+          }
 
           shiftSlot.innerHTML = `
             <div class="shift-header ${shift.role.toLowerCase()}">
               <strong>${shift.role}</strong>
               <span>${shift.time}</span>
             </div>
+
             <p>${shift.claimedBy.length}/${shift.capacity} filled</p>
-               ${shift.claimedBy.includes(selectedStaff) ? `<p class="you-are-working">You are working this shift</p>` : ""}
-            <p>
+
+            <div class="shift-progress">
+              <div 
+                class="shift-progress-fill ${shift.role.toLowerCase()}" 
+                style="width: ${(shift.claimedBy.length / shift.capacity) * 100}%">
+              </div>
+            </div>
+
+            ${
+              shift.claimedBy.includes(selectedStaff)
+                ? `<p class="you-are-working">You are working this shift</p>`
+                : ""
+            }
+
+            <p class="${
+              shift.claimedBy.length === 0
+                ? "available"
+                : shift.claimedBy.length < shift.capacity
+                  ? "partial-fill"
+                  : "full-fill"
+            }">
               ${
-                shift.claimedBy.length > 0
-                  ? "Claimed by: " + shift.claimedBy.join(", ")
-                  : "Available"
+                shift.claimedBy.length === 0
+                  ? "Available"
+                  : shift.claimedBy.length < shift.capacity
+                    ? `${shift.claimedBy.length} of ${shift.capacity} taken (${shift.claimedBy.join(", ")})`
+                    : `Full (${shift.claimedBy.join(", ")})`
               }
             </p>
+
             ${
               shift.claimedBy.includes(selectedStaff)
                 ? `<button onclick="cancelShift(${shift.id})">Cancel Shift</button>`
                 : shift.claimedBy.length < shift.capacity
                   ? `<button onclick="claimShift(${shift.id})">Claim Shift</button>`
-                  : `<p>Full</p>`
+                  : `<p class="full-fill">Full</p>`
             }
           `;
 
@@ -334,13 +361,13 @@ function showMonthOverview() {
     <button class="close-modal">Close</button>
     <h2>${monthName} ${currentYear}</h2>
 
-    <div class="calendar-legend">
+      <div class="calendar-legend">
       <span class="legend-bar"></span> Bar
       <span class="legend-pizza"></span> Pizza
       <span class="legend-full"></span> Full
     </div>
 
-    <div class="calendar-weekdays">
+      <div class="calendar-weekdays">
       <span>Mon</span>
       <span>Tue</span>
       <span>Wed</span>
@@ -366,11 +393,11 @@ function showMonthOverview() {
 
   for (let day = 1; day <= 31; day++) {
     const date = new Date(currentYear, currentMonth, day);
+
     if (date.getMonth() !== currentMonth) break;
 
     const fullDay = date.toLocaleDateString("en-GB", { weekday: "long" });
     const dateLabel = `${fullDay} ${getOrdinal(day)}`;
-
     const dayShifts = shifts.filter(shift => shift.date === dateLabel);
 
     const cell = document.createElement("div");
@@ -381,8 +408,14 @@ function showMonthOverview() {
       const isFull = shift.claimedBy.length >= shift.capacity;
 
       const line = document.createElement("div");
-      line.className = `calendar-line ${shift.role.toLowerCase()} ${isFull ? "full" : ""}`;
-      line.title = `${shift.role} ${shift.time} ${shift.claimedBy.length}/${shift.capacity}`;
+      const fillPercent =
+        shift.claimedBy.length === 0
+            ? 100
+            : (shift.claimedBy.length / shift.capacity) * 100;
+
+        line.className = `calendar-line ${shift.role.toLowerCase()} ${isFull ? "full" : ""}`;
+        line.style.width = `${fillPercent}%`;
+        line.title = `${shift.role} ${shift.time} ${shift.claimedBy.length}/${shift.capacity}`;
 
       cell.appendChild(line);
     });
@@ -406,12 +439,25 @@ function claimShift(id) {
 
   const shift = shifts.find(s => s.id === id);
 
+  const alreadyWorkingThisDay = shifts.some(otherShift => {
+    return (
+      otherShift.date === shift.date &&
+      otherShift.id !== shift.id &&
+      otherShift.claimedBy.includes(selectedStaff)
+    );
+  });
+
+  if (alreadyWorkingThisDay) {
+    alert("You already have a shift on this day.");
+    return;
+  }
+
   if (
     !shift.claimedBy.includes(selectedStaff) &&
     shift.claimedBy.length < shift.capacity
   ) {
     shift.claimedBy.push(selectedStaff);
-    alert("This Shift is yours!");
+    alert("This shift is yours!");
   }
 
   renderShifts();
