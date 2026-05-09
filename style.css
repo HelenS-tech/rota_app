@@ -1,135 +1,54 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
 body {
+  margin: 0;
   background: #0b0f1a;
   color: #e5e7eb;
   font-family: Arial, sans-serif;
 }
 
 .header {
-  background: #0b0f1a;
-  padding: 20px 10px;
-  border-radius: 12px;
   text-align: center;
-  margin-bottom: 24px;
+  padding: 20px 12px;
+  margin-bottom: 20px;
 }
 
 .logo {
   display: block;
-  margin: 20px auto 10px;
-  max-width: 220px;
+  margin: 0 auto 12px;
+  max-width: 260px;
+  width: 80%;
   height: auto;
   border-radius: 10px;
-  filter: drop-shadow(0 0 12px rgba(0, 255, 153, 0.4));
+  filter: drop-shadow(0 0 12px rgba(0, 255, 153, 0.35));
 }
 
 .tagline {
-  margin-top: 8px;
-  font-size: 14px;
-  color: #aaa;
-}
-
-#shifts {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 16px;
-}
-
-
-.day-card {
-  background: #111827;
-  border: 1px solid #1f2937;
-  border-radius: 14px;
-  padding: 18px;
-  margin-bottom: 16px;
-  color: #e5e7eb;
-}
-
-.day-card h3 {
-  margin-top: 0;
-}
-
-h1 {
-  text-align: center;
-  font-size: 38px;
-  margin-bottom: 4px;
-}
-
-.tagline {
-  text-align: center;
+  color: #00ff99;
   font-size: 15px;
-  color: #555;
-  margin: 0;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  margin: 10px 0 14px;
+  text-align: center;
 }
 
 .venue-name {
-  text-align: center;
+  color: #cbd5e1;
   font-size: 13px;
-  color: #777;
-  margin-top: 4px;
-  margin-bottom: 20px;
-}
-
-.tagline {
+  font-weight: 500;
   text-align: center;
-  color: #666;
-  margin-bottom: 20px;
+  margin-bottom: 26px;
+  opacity: 0.85;
 }
 
-.shift-slot {
-  margin-top: 6px;
-}
-
-button {
-  margin-top: 5px;
-  width: 100%;
-  background: linear-gradient(90deg, #00c6ff, #00ff99);
-  border: none;
-  color: #000;
-  font-weight: bold;
-  border-radius: 8px;
-  padding: 10px;
-}
-
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-.week-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 30px;
-}
-
-.week-row h3 {
-  grid-column: 1 / -1;
-  margin-bottom: 0;
-}
-
-/* THIS is the key change */
-.week-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-}
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
-}
-
-h1, h2 {
-  text-align: center;
-}
-
-h1, h2, h3, h4 {
-  color: #ffffff;
-}
-
-.tagline {
-  color: #9ca3af;
-}
-
-.venue-name {
-  color: #6b7280;
+.venue-name::before,
+.venue-name::after {
+  content: "—";
+  color: #00c6ff;
+  margin: 0 8px;
 }
 
 .user-bar {
@@ -137,95 +56,11 @@ h1, h2, h3, h4 {
   justify-content: center;
   align-items: center;
   gap: 10px;
-  margin: 20px 0;
-  width: 100%;
-  text-align: center;
+  margin: 20px 0 34px;
 }
 
 .user-bar span {
   font-weight: bold;
-}
-
-.week-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-bottom: 32px;
-}
-
-.day-card {
-  padding: 16px;
-  min-width: 180px;
-}
-
-.day-card {
-  border-top: 1px solid #1f2937;
-  margin-top: 12px;
-  padding-top: 12px;
-}
-
-.month-controls {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-}
-
-.month-controls button {
-  width: auto;
-}
-
-/* Phone layout */
-@media (max-width: 700px) {
-  #shifts {
-    width: 100%;
-  }
-
-  .week-row {
-    display: block;
-  }
-
-  .day-card {
-    margin-bottom: 16px;
-    width: auto;
-  }
-
-  .month-controls {
-    flex-direction: column;
-  }
-
-  button {
-    width: 100%;
-    padding: 10px;
-  }
-}
-
-html,
-body {
-  background: #0b0f1a;
-  color: #e5e7eb;
-}
-
-.header,
-main,
-.container,
-#app,
-#shifts {
-  background: transparent;
-}
-
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-}
-
-.user-bar,
-.venue-name,
-.tagline {
-  color: #cbd5e1;
-}
-
-label {
-  color: #e5e7eb;
 }
 
 select {
@@ -233,7 +68,13 @@ select {
   color: #e5e7eb;
   border: 1px solid #334155;
   border-radius: 6px;
-  padding: 4px 8px;
+  padding: 6px 10px;
+}
+
+#shifts {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 16px;
 }
 
 h1,
@@ -243,36 +84,79 @@ h4 {
   color: #ffffff;
 }
 
-* {
-  box-sizing: border-box;
+h2 {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 24px;
 }
 
 .month-controls {
-  padding: 0 16px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 32px;
+}
+
+button {
+  background: linear-gradient(90deg, #00c6ff, #00ff99);
+  border: none;
+  color: #000;
+  font-weight: bold;
+  border-radius: 12px;
+  padding: 10px 16px;
+  cursor: pointer;
 }
 
 .month-controls button {
-  width: 100%;
-  max-width: 320px;
-  display: block;
-  margin: 10px auto;
+  width: 190px;
 }
 
 .shift-slot button {
-  width: 100%;
+  width: 170px;
+  display: block;
+  margin: 12px auto 0;
 }
 
-@media (max-width: 600px) {
-  body {
-    padding: 0;
-  }
+button:active {
+  transform: scale(0.98);
+}
 
-  .header {
-    padding: 16px 12px;
-  }
+.week-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 34px;
+}
 
+.week-row h3 {
+  grid-column: 1 / -1;
+  margin-bottom: 0;
+}
+
+.day-card {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 14px;
+  padding: 18px;
+  color: #e5e7eb;
+}
+
+.shift-slot {
+  border-top: 1px solid #1f2937;
+  margin-top: 14px;
+  padding-top: 14px;
+}
+
+.my-shift {
+  background: rgba(0, 255, 153, 0.08);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+/* Phone layout */
+@media (max-width: 700px) {
   .logo {
-    max-width: 220px;
+    max-width: 240px;
     width: 85%;
   }
 
@@ -281,9 +165,14 @@ h4 {
     padding: 12px;
   }
 
+  .month-controls {
+    flex-direction: column;
+    align-items: center;
+  }
+
   .month-controls button {
-    width: 100%;
-    max-width: none;
+    width: 78%;
+    max-width: 260px;
   }
 
   .week-row {
@@ -293,19 +182,14 @@ h4 {
   .day-card {
     width: 100%;
     margin-bottom: 16px;
-    padding: 16px;
   }
 
   .shift-slot button {
-    width: 100%;
-    padding: 12px;
+    width: 80%;
+    max-width: 220px;
   }
 
   h2 {
     font-size: 24px;
-  }
-
-  h3 {
-    margin-left: 0;
   }
 }
