@@ -277,12 +277,17 @@ function renderShifts() {
             shiftSlot.classList.add("my-shift");
           }
 
+          if (shift.claimedBy.length > 0) {
+            shiftSlot.classList.add("claimed-shift");
+            }
+
           shiftSlot.innerHTML = `
             <div class="shift-header ${shift.role.toLowerCase()}">
               <strong>${shift.role}</strong>
               <span>${shift.time}</span>
             </div>
             <p>${shift.claimedBy.length}/${shift.capacity} filled</p>
+               ${shift.claimedBy.includes(selectedStaff) ? `<p class="you-are-working">You are working this shift</p>` : ""}
             <p>
               ${
                 shift.claimedBy.length > 0
@@ -406,7 +411,7 @@ function claimShift(id) {
     shift.claimedBy.length < shift.capacity
   ) {
     shift.claimedBy.push(selectedStaff);
-    alert("Shift claimed!");
+    alert("This Shift is yours!");
   }
 
   renderShifts();
@@ -419,7 +424,7 @@ function cancelShift(id) {
 
   shift.claimedBy = shift.claimedBy.filter(name => name !== selectedStaff);
 
-  alert("Shift cancelled!");
+  alert("You have cancelled your shift!");
   renderShifts();
 }
 

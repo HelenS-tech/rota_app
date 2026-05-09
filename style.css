@@ -333,7 +333,6 @@ button:active {
 .legend-full { background: #6b7280; }
 
 .week-tabs {
-  display: flex;
   justify-content: center;
   gap: 8px;
   margin-bottom: 22px;
@@ -346,7 +345,56 @@ button:active {
 }
 
 .week-tabs .active-week {
-  background: #00ff99;
+  background: #18c226;
+  color: #e5e7eb;
+  font-weight: bold;
+  box-shadow: 0 0 12px rgba(0, 255, 153, 0.35);
+}
+
+.you-are-working {
+  color: #00ff99;
+  font-weight: 700;
+  font-size: 13px;
+  margin: 8px 0;
+}
+
+.claimed-shift {
+  border: 1px solid #00ff99;
+  background: linear-gradient(180deg, rgba(0,255,153,0.08), transparent);
+  box-shadow: 0 0 10px rgba(0,255,153,0.15);
+  transition: all 0.2s ease;
+}
+
+.claimed-shift p:last-child {
+  color: #f87171; /* soft red */
+  font-weight: 600;
+}
+
+.my-shift {
+  border: 2px solid #00ff99;
+  box-shadow: 0 0 14px rgba(0,255,153,0.35);
+}
+
+.shift-slot:not(.claimed-shift) button {
+  animation: subtlePulse 2.5s infinite;
+}
+
+@keyframes subtlePulse {
+  0% {
+    box-shadow: 0 0 0 rgba(0, 255, 153, 0);
+  }
+
+  50% {
+    box-shadow: 0 0 14px rgba(0, 255, 153, 0.35);
+  }
+
+  100% {
+    box-shadow: 0 0 0 rgba(0, 255, 153, 0);
+  }
+}
+
+.claimed-shift button {
+  animation: none;
 }
 
 /* Phone layout */
