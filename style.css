@@ -333,10 +333,17 @@ button:active {
 .legend-full { background: #6b7280; }
 
 .week-tabs {
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 22px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  justify-items: center;
+  margin-bottom: 24px;
+}
+
+.week-tabs button:last-child:nth-child(5) {
+  grid-column: 2 / 4;
+  justify-self: center;
+  width: 65px; /* 👈 match other buttons */
 }
 
 .week-tabs button {
