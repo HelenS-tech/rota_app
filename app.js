@@ -6,15 +6,15 @@ function generateShifts(year, month) {
   let id = 1;
   let extraMonday = null;
 
-for (let day = 1; day <= 7; day++) {
-  const date = new Date(year, month, day);
-  const dayName = date.toLocaleDateString("en-GB", { weekday: "short" });
+  for (let day = 1; day <= 7; day++) {
+    const date = new Date(year, month, day);
+    const dayName = date.toLocaleDateString("en-GB", { weekday: "short" });
 
-  if (dayName === "Mon") {
-    extraMonday = day;
-    break;
+    if (dayName === "Mon") {
+      extraMonday = day;
+      break;
+    }
   }
-}
 
   for (let day = 1; day <= 31; day++) {
     const date = new Date(year, month, day);
@@ -22,15 +22,29 @@ for (let day = 1; day <= 7; day++) {
     if (date.getMonth() !== month) break;
 
     const dayName = date.toLocaleDateString("en-GB", { weekday: "short" });
-    const label = `${dayName} ${day}`;
+    function getOrdinal(n) {
+  if (n > 3 && n < 21) return n + "th";
+  switch (n % 10) {
+    case 1: return n + "st";
+    case 2: return n + "nd";
+    case 3: return n + "rd";
+    default: return n + "th";
+  }
+}
+
+const fullDay = date.toLocaleDateString("en-GB", { weekday: "long" });
+const label = `${fullDay} ${getOrdinal(day)}`;
 
     if (["Wed", "Thu", "Fri", "Sat"].includes(dayName) || day === extraMonday) {
       shifts.push({
         id: id++,
         week: Math.ceil(day / 7),
         date: label,
+        event: dayName === "Wed" ? "Quiz Night" : "",
         role: "Bar",
-        claimedBy: null
+        time: "18:00 - 22:00",
+        capacity: 2,
+        claimedBy: []
       });
     }
 
@@ -39,8 +53,11 @@ for (let day = 1; day <= 7; day++) {
         id: id++,
         week: Math.ceil(day / 7),
         date: label,
+        event: dayName === "Wed" ? "Quiz Night" : "",
         role: "Pizza",
-        claimedBy: null
+        time: "17:00 - 21:00",
+        capacity: 1,
+        claimedBy: []
       });
     }
   }
@@ -49,7 +66,7 @@ for (let day = 1; day <= 7; day++) {
 }
 
 let shifts = generateShifts(currentYear, currentMonth);
-let selectedStaff = "";
+let selectedStaff = localStorage.getItem("staff") || "";
 
 const staffNames = [
   "Helen",
@@ -155,15 +172,28 @@ function renderShifts() {
         const shiftSlot = document.createElement("div");
         shiftSlot.className = "shift-slot";
 
+        if (shift.claimedBy.includes(selectedStaff)) {
+          shiftSlot.classList.add("my-shift");
+        }
+
         shiftSlot.innerHTML = `
-          <p>${shift.role}</p>
-          <p>${shift.claimedBy ? "Claimed by: " + shift.claimedBy : "Available"}</p>
+          <p><strong>${shift.role}</strong></p>
+          <p>${shift.time}</p>
+          ${shift.event ? `<p><em>${shift.event}</em></p>` : ""}
+          <p>${shift.claimedBy.length}/${shift.capacity} filled</p>
+          <p>
+            ${
+              shift.claimedBy.length > 0
+                ? "Claimed by: " + shift.claimedBy.join(", ")
+                : "Available"
+            }
+          </p>
           ${
-            shift.claimedBy === selectedStaff
+            shift.claimedBy.includes(selectedStaff)
               ? `<button onclick="cancelShift(${shift.id})">Cancel Shift</button>`
-              : !shift.claimedBy
+              : shift.claimedBy.length < shift.capacity
                 ? `<button onclick="claimShift(${shift.id})">Claim Shift</button>`
-                : `<p>Claimed</p>`
+                : `<p>Full</p>`
           }
         `;
 
@@ -185,20 +215,25 @@ function claimShift(id) {
 
   const shift = shifts.find(s => s.id === id);
 
-  if (!shift.claimedBy) {
-    shift.claimedBy = selectedStaff;
+  if (
+    !shift.claimedBy.includes(selectedStaff) &&
+    shift.claimedBy.length < shift.capacity
+  ) {
+    shift.claimedBy.push(selectedStaff);
+    alert("Shift claimed!");
   }
 
   renderShifts();
 }
 
 function cancelShift(id) {
+  if (!confirm("Cancel this shift?")) return;
+
   const shift = shifts.find(s => s.id === id);
 
-  if (shift.claimedBy === selectedStaff) {
-    shift.claimedBy = null;
-  }
+  shift.claimedBy = shift.claimedBy.filter(name => name !== selectedStaff);
 
+  alert("Shift cancelled!");
   renderShifts();
 }
 
@@ -209,6 +244,8 @@ staffNames.forEach(name => {
   staffSelect.appendChild(option);
 });
 
+staffSelect.value = selectedStaff;
+
 staffSelect.addEventListener("change", function () {
   const chosenName = staffSelect.value;
 
@@ -218,11 +255,11 @@ staffSelect.addEventListener("change", function () {
 
   if (enteredPin === staffPins[chosenName]) {
     selectedStaff = chosenName;
+    localStorage.setItem("staff", selectedStaff);
     renderShifts();
   } else {
     alert("Incorrect PIN");
-    staffSelect.value = "";
-    selectedStaff = "";
+    staffSelect.value = selectedStaff;
     renderShifts();
   }
 });

@@ -23,6 +23,7 @@
 button {
   margin-top: 5px;
   width: 100%;
+  padding: 10px;
 }
 
 button:disabled {
@@ -68,4 +69,57 @@ h1, h2 {
 
 .user-bar span {
   font-weight: bold;
+}
+
+.week-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.day-card {
+  padding: 16px;
+  min-width: 180px;
+}
+
+.shift-slot {
+  border-top: 1px solid #ddd;
+  padding-top: 12px;
+  margin-top: 12px;
+}
+
+.month-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.month-controls button {
+  width: auto;
+}
+
+/* Phone layout */
+@media (max-width: 700px) {
+  #shifts {
+    width: 100%;
+  }
+
+  .week-row {
+    display: block;
+  }
+
+  .day-card {
+    margin-bottom: 16px;
+    width: auto;
+  }
+
+  .month-controls {
+    flex-direction: column;
+  }
+
+  button {
+    width: 100%;
+    padding: 10px;
+  }
 }
