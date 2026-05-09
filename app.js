@@ -1,10 +1,43 @@
 let currentYear = 2026;
 let currentMonth = 5; // June = 5
 
+function getOrdinal(n) {
+  if (n > 3 && n < 21) return n + "th";
+
+  switch (n % 10) {
+    case 1:
+      return n + "st";
+    case 2:
+      return n + "nd";
+    case 3:
+      return n + "rd";
+    default:
+      return n + "th";
+  }
+}
+
 function generateShifts(year, month) {
   const shifts = [];
   let id = 1;
   let extraMonday = null;
+
+  function getWednesdayEvent(date) {
+    const day = date.getDate();
+    const weekOfMonth = Math.ceil(day / 7);
+
+    if (weekOfMonth === 1) return "Quiz Night";
+    if (weekOfMonth === 2) return "Open Mic";
+    if (weekOfMonth === 3) return "Classic Car";
+
+    const nextWeek = new Date(date);
+    nextWeek.setDate(day + 7);
+
+    if (nextWeek.getMonth() !== date.getMonth()) {
+      return "Bingo";
+    }
+
+    return "";
+  }
 
   for (let day = 1; day <= 7; day++) {
     const date = new Date(year, month, day);
@@ -22,25 +55,65 @@ function generateShifts(year, month) {
     if (date.getMonth() !== month) break;
 
     const dayName = date.toLocaleDateString("en-GB", { weekday: "short" });
-    function getOrdinal(n) {
-  if (n > 3 && n < 21) return n + "th";
-  switch (n % 10) {
-    case 1: return n + "st";
-    case 2: return n + "nd";
-    case 3: return n + "rd";
-    default: return n + "th";
-  }
-}
+    const fullDay = date.toLocaleDateString("en-GB", { weekday: "long" });
+    const label = `${fullDay} ${getOrdinal(day)}`;
 
-const fullDay = date.toLocaleDateString("en-GB", { weekday: "long" });
-const label = `${fullDay} ${getOrdinal(day)}`;
-
-    if (["Wed", "Thu", "Fri", "Sat"].includes(dayName) || day === extraMonday) {
+    if (day === extraMonday) {
       shifts.push({
         id: id++,
         week: Math.ceil(day / 7),
         date: label,
-        event: dayName === "Wed" ? "Quiz Night" : "",
+        event: "Biker Night",
+        role: "Bar",
+        time: "17:00 - 22:00",
+        capacity: 2,
+        claimedBy: []
+      });
+
+      shifts.push({
+        id: id++,
+        week: Math.ceil(day / 7),
+        date: label,
+        event: "Biker Night",
+        role: "Pizza",
+        time: "18:00 - 20:00",
+        capacity: 1,
+        claimedBy: []
+      });
+
+      continue;
+    }
+
+    if (["Wed", "Thu", "Fri"].includes(dayName)) {
+      shifts.push({
+        id: id++,
+        week: Math.ceil(day / 7),
+        date: label,
+        event: dayName === "Wed" ? getWednesdayEvent(date) : "",
+        role: "Bar",
+        time: "16:00 - 22:00",
+        capacity: 2,
+        claimedBy: []
+      });
+    }
+
+    if (dayName === "Sat") {
+      shifts.push({
+        id: id++,
+        week: Math.ceil(day / 7),
+        date: label,
+        event: "",
+        role: "Bar",
+        time: "14:00 - 18:00",
+        capacity: 2,
+        claimedBy: []
+      });
+
+      shifts.push({
+        id: id++,
+        week: Math.ceil(day / 7),
+        date: label,
+        event: "",
         role: "Bar",
         time: "18:00 - 22:00",
         capacity: 2,
@@ -48,14 +121,14 @@ const label = `${fullDay} ${getOrdinal(day)}`;
       });
     }
 
-    if (["Thu", "Fri", "Sat"].includes(dayName) || day === extraMonday) {
+    if (["Thu", "Fri", "Sat"].includes(dayName)) {
       shifts.push({
         id: id++,
         week: Math.ceil(day / 7),
         date: label,
-        event: dayName === "Wed" ? "Quiz Night" : "",
+        event: "",
         role: "Pizza",
-        time: "17:00 - 21:00",
+        time: "17:00 - 22:00",
         capacity: 1,
         claimedBy: []
       });
