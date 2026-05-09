@@ -261,3 +261,51 @@ h4 {
 .shift-slot button {
   width: 100%;
 }
+
+@media (max-width: 600px) {
+  body {
+    padding: 0;
+  }
+
+  .header {
+    padding: 16px 12px;
+  }
+
+  .logo {
+    max-width: 220px;
+    width: 85%;
+  }
+
+  #shifts {
+    width: 100%;
+    padding: 12px;
+  }
+
+  .month-controls button {
+    width: 100%;
+    max-width: none;
+  }
+
+  .week-row {
+    display: block;
+  }
+
+  .day-card {
+    width: 100%;
+    margin-bottom: 16px;
+    padding: 16px;
+  }
+
+  .shift-slot button {
+    width: 100%;
+    padding: 12px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+
+  h3 {
+    margin-left: 0;
+  }
+}
