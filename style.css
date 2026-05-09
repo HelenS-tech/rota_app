@@ -117,6 +117,37 @@ button {
   margin: 12px auto 0;
 }
 
+.shift-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+/* BAR */
+.shift-header.bar strong {
+  color: #38bdf8; /* blue */
+}
+
+/* PIZZA */
+.shift-header.pizza strong {
+  color: #f97316; /* orange */
+}
+
+.shift-slot.bar {
+  border-left: 4px solid #38bdf8;
+}
+
+.shift-slot.pizza {
+  border-left: 4px solid #f97316;
+}
+
+.shift-header span {
+  color: #cbd5e1;
+  font-size: 14px;
+}
+
 button:active {
   transform: scale(0.98);
 }
@@ -141,10 +172,24 @@ button:active {
   color: #e5e7eb;
 }
 
+.day-event {
+  display: inline-block;
+  background: rgba(0, 255, 153, 0.12);
+  color: #00ff99;
+  border: 1px solid rgba(0, 255, 153, 0.3);
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 13px;
+  font-weight: 700;
+  margin: 4px 0 14px;
+}
+
 .shift-slot {
-  border-top: 1px solid #1f2937;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid #1f2937;
+  border-radius: 12px;
+  padding: 14px;
   margin-top: 14px;
-  padding-top: 14px;
 }
 
 .my-shift {

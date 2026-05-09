@@ -239,20 +239,26 @@ function renderShifts() {
     Object.keys(groupedByDate).forEach(date => {
       const dayCard = document.createElement("div");
       dayCard.className = "day-card";
-      dayCard.innerHTML = `<h4>${date}</h4>`;
+      const dayEvent = groupedByDate[date].find(s => s.event)?.event;
+
+      dayCard.innerHTML = `
+      <h4>${date}</h4>
+      ${dayEvent ? `<p class="day-event">${dayEvent}</p>` : ""}
+      `;
 
       groupedByDate[date].forEach(shift => {
         const shiftSlot = document.createElement("div");
-        shiftSlot.className = "shift-slot";
+        shiftSlot.className = `shift-slot ${shift.role.toLowerCase()}`;
 
         if (shift.claimedBy.includes(selectedStaff)) {
           shiftSlot.classList.add("my-shift");
         }
 
         shiftSlot.innerHTML = `
-          <p><strong>${shift.role}</strong></p>
-          <p>${shift.time}</p>
-          ${shift.event ? `<p><em>${shift.event}</em></p>` : ""}
+          <div class="shift-header ${shift.role.toLowerCase()}">
+          <strong>${shift.role}</strong>
+          <span>${shift.time}</span>
+          </div>
           <p>${shift.claimedBy.length}/${shift.capacity} filled</p>
           <p>
             ${
