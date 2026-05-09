@@ -156,6 +156,7 @@ const staffPins = {
   Helen: "1234",
   Elaine: "5566",
   Richard: "2345",
+  Dan: "6789",
   Roxy: "3456",
   Rachael: "4567",
   Jes: "6587",
