@@ -101,7 +101,7 @@ function renderShifts() {
     month: "long"
   });
 
-  monthTitle.textContent = `${monthName} ${currentYear} Rota`;
+  monthTitle.textContent = `${monthName} ${currentYear}`;
   shiftsDiv.appendChild(monthTitle);
 
   const controls = document.createElement("div");
