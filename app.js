@@ -139,7 +139,11 @@ function generateShifts(year, month) {
   return shifts;
 }
 
-let shifts = generateShifts(currentYear, currentMonth);
+let savedShifts = localStorage.getItem("shifts");
+let shifts = savedShifts
+  ? JSON.parse(savedShifts)
+  : generateShifts(currentYear, currentMonth);
+
 let selectedStaff = localStorage.getItem("staff") || "";
 
 const staffNames = [
@@ -168,6 +172,10 @@ const staffPins = {
 
 const shiftsDiv = document.getElementById("shifts");
 const staffSelect = document.getElementById("staffSelect");
+
+function saveShifts() {
+  localStorage.setItem("shifts", JSON.stringify(shifts));
+}
 
 function renderShifts() {
   shiftsDiv.innerHTML = "";
@@ -460,6 +468,8 @@ function claimShift(id) {
     alert("This shift is yours!");
   }
 
+  saveShifts();
+
   renderShifts();
 }
 
@@ -471,7 +481,9 @@ function cancelShift(id) {
   shift.claimedBy = shift.claimedBy.filter(name => name !== selectedStaff);
 
   alert("You have cancelled your shift!");
+  saveShifts();
   renderShifts();
+
 }
 
 staffNames.forEach(name => {
