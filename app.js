@@ -1,5 +1,6 @@
 let currentYear = 2026;
 let currentMonth = 5; // June = 5
+let selectedWeek = 1;
 
 function getOrdinal(n) {
   if (n > 3 && n < 21) return n + "th";
@@ -183,10 +184,10 @@ function renderShifts() {
   controls.className = "month-controls";
 
   controls.innerHTML = `
-  <button id="prevMonth">Previous Month</button>
-  <button id="nextMonth">Next Month</button>
-  <button id="overviewBtn">Month Overview</button>
-`;
+    <button id="prevMonth">Previous Month</button>
+    <button id="nextMonth">Next Month</button>
+    <button id="overviewBtn">Month Overview</button>
+  `;
 
   shiftsDiv.appendChild(controls);
 
@@ -198,6 +199,7 @@ function renderShifts() {
       currentYear++;
     }
 
+    selectedWeek = 1;
     shifts = generateShifts(currentYear, currentMonth);
     renderShifts();
   });
@@ -210,6 +212,7 @@ function renderShifts() {
       currentYear--;
     }
 
+    selectedWeek = 1;
     shifts = generateShifts(currentYear, currentMonth);
     renderShifts();
   });
@@ -226,69 +229,89 @@ function renderShifts() {
     groupedByWeek[shift.week].push(shift);
   });
 
-  Object.keys(groupedByWeek).forEach(week => {
-    const weekDiv = document.createElement("div");
-    weekDiv.className = "week-row";
-    weekDiv.innerHTML = `<h3>Week ${week}</h3>`;
+  const weekTabs = document.createElement("div");
+  weekTabs.className = "week-tabs";
 
-    const groupedByDate = {};
+  weekTabs.innerHTML = Object.keys(groupedByWeek)
+    .map(week => `
+      <button class="${Number(week) === selectedWeek ? "active-week" : ""}" onclick="selectWeek(${week})">
+        Week ${week}
+      </button>
+    `)
+    .join("");
 
-    groupedByWeek[week].forEach(shift => {
-      if (!groupedByDate[shift.date]) {
-        groupedByDate[shift.date] = [];
-      }
+  shiftsDiv.appendChild(weekTabs);
 
-      groupedByDate[shift.date].push(shift);
-    });
+  Object.keys(groupedByWeek)
+    .filter(week => Number(week) === selectedWeek)
+    .forEach(week => {
+      const weekDiv = document.createElement("div");
+      weekDiv.className = "week-row";
+      weekDiv.innerHTML = `<h3>Week ${week}</h3>`;
 
-    Object.keys(groupedByDate).forEach(date => {
-      const dayCard = document.createElement("div");
-      dayCard.className = "day-card";
-      const dayEvent = groupedByDate[date].find(s => s.event)?.event;
+      const groupedByDate = {};
 
-      dayCard.innerHTML = `
-      <h4>${date}</h4>
-      ${dayEvent ? `<p class="day-event">${dayEvent}</p>` : ""}
-      `;
-
-      groupedByDate[date].forEach(shift => {
-        const shiftSlot = document.createElement("div");
-        shiftSlot.className = `shift-slot ${shift.role.toLowerCase()}`;
-
-        if (shift.claimedBy.includes(selectedStaff)) {
-          shiftSlot.classList.add("my-shift");
+      groupedByWeek[week].forEach(shift => {
+        if (!groupedByDate[shift.date]) {
+          groupedByDate[shift.date] = [];
         }
 
-        shiftSlot.innerHTML = `
-          <div class="shift-header ${shift.role.toLowerCase()}">
-          <strong>${shift.role}</strong>
-          <span>${shift.time}</span>
-          </div>
-          <p>${shift.claimedBy.length}/${shift.capacity} filled</p>
-          <p>
-            ${
-              shift.claimedBy.length > 0
-                ? "Claimed by: " + shift.claimedBy.join(", ")
-                : "Available"
-            }
-          </p>
-          ${
-            shift.claimedBy.includes(selectedStaff)
-              ? `<button onclick="cancelShift(${shift.id})">Cancel Shift</button>`
-              : shift.claimedBy.length < shift.capacity
-                ? `<button onclick="claimShift(${shift.id})">Claim Shift</button>`
-                : `<p>Full</p>`
-          }
-        `;
-
-        dayCard.appendChild(shiftSlot);
+        groupedByDate[shift.date].push(shift);
       });
 
-      weekDiv.appendChild(dayCard);
-    });
+      Object.keys(groupedByDate).forEach(date => {
+        const dayCard = document.createElement("div");
+        dayCard.className = "day-card";
+        const dayEvent = groupedByDate[date].find(s => s.event)?.event;
 
-    shiftsDiv.appendChild(weekDiv);
-  });
+        dayCard.innerHTML = `
+          <h4>${date}</h4>
+          ${dayEvent ? `<p class="day-event">${dayEvent}</p>` : ""}
+        `;
+
+        groupedByDate[date].forEach(shift => {
+          const shiftSlot = document.createElement("div");
+          shiftSlot.className = `shift-slot ${shift.role.toLowerCase()}`;
+
+          if (shift.claimedBy.includes(selectedStaff)) {
+            shiftSlot.classList.add("my-shift");
+          }
+
+          shiftSlot.innerHTML = `
+            <div class="shift-header ${shift.role.toLowerCase()}">
+              <strong>${shift.role}</strong>
+              <span>${shift.time}</span>
+            </div>
+            <p>${shift.claimedBy.length}/${shift.capacity} filled</p>
+            <p>
+              ${
+                shift.claimedBy.length > 0
+                  ? "Claimed by: " + shift.claimedBy.join(", ")
+                  : "Available"
+              }
+            </p>
+            ${
+              shift.claimedBy.includes(selectedStaff)
+                ? `<button onclick="cancelShift(${shift.id})">Cancel Shift</button>`
+                : shift.claimedBy.length < shift.capacity
+                  ? `<button onclick="claimShift(${shift.id})">Claim Shift</button>`
+                  : `<p>Full</p>`
+            }
+          `;
+
+          dayCard.appendChild(shiftSlot);
+        });
+
+        weekDiv.appendChild(dayCard);
+      });
+
+      shiftsDiv.appendChild(weekDiv);
+    });
+}
+
+function selectWeek(week) {
+  selectedWeek = week;
+  renderShifts();
 }
 
 function showMonthOverview() {
