@@ -332,6 +332,23 @@ button:active {
 .legend-pizza { background: #f97316; }
 .legend-full { background: #6b7280; }
 
+.week-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+
+.week-tabs button {
+  width: auto;
+  padding: 8px 12px;
+}
+
+.week-tabs .active-week {
+  background: #00ff99;
+}
+
 /* Phone layout */
 @media (max-width: 700px) {
   .logo {
