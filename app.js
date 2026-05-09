@@ -145,6 +145,7 @@ const staffNames = [
   "Helen",
   "Elaine",
   "Richard",
+  "Dan",
   "Roxy",
   "Rachael",
   "Jes",
