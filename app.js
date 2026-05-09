@@ -183,9 +183,10 @@ function renderShifts() {
   controls.className = "month-controls";
 
   controls.innerHTML = `
-    <button id="prevMonth">Previous Month</button>
-    <button id="nextMonth">Next Month</button>
-  `;
+  <button id="prevMonth">Previous Month</button>
+  <button id="nextMonth">Next Month</button>
+  <button id="overviewBtn">Month Overview</button>
+`;
 
   shiftsDiv.appendChild(controls);
 
@@ -212,6 +213,8 @@ function renderShifts() {
     shifts = generateShifts(currentYear, currentMonth);
     renderShifts();
   });
+
+  document.getElementById("overviewBtn").addEventListener("click", showMonthOverview);
 
   const groupedByWeek = {};
 
@@ -285,6 +288,85 @@ function renderShifts() {
     });
 
     shiftsDiv.appendChild(weekDiv);
+  });
+}
+
+function showMonthOverview() {
+  const overlay = document.createElement("div");
+  overlay.className = "modal-overlay";
+
+  const modal = document.createElement("div");
+  modal.className = "month-modal calendar-modal";
+
+  const monthName = new Date(currentYear, currentMonth).toLocaleString("en-GB", {
+    month: "long"
+  });
+
+  modal.innerHTML = `
+    <button class="close-modal">Close</button>
+    <h2>${monthName} ${currentYear}</h2>
+
+    <div class="calendar-legend">
+      <span class="legend-bar"></span> Bar
+      <span class="legend-pizza"></span> Pizza
+      <span class="legend-full"></span> Full
+    </div>
+
+    <div class="calendar-weekdays">
+      <span>Mon</span>
+      <span>Tue</span>
+      <span>Wed</span>
+      <span>Thu</span>
+      <span>Fri</span>
+      <span>Sat</span>
+      <span>Sun</span>
+    </div>
+
+    <div class="calendar-grid"></div>
+  `;
+
+  const calendarGrid = modal.querySelector(".calendar-grid");
+
+  const firstDay = new Date(currentYear, currentMonth, 1);
+  const firstDayIndex = (firstDay.getDay() + 6) % 7;
+
+  for (let i = 0; i < firstDayIndex; i++) {
+    const emptyCell = document.createElement("div");
+    emptyCell.className = "calendar-cell empty";
+    calendarGrid.appendChild(emptyCell);
+  }
+
+  for (let day = 1; day <= 31; day++) {
+    const date = new Date(currentYear, currentMonth, day);
+    if (date.getMonth() !== currentMonth) break;
+
+    const fullDay = date.toLocaleDateString("en-GB", { weekday: "long" });
+    const dateLabel = `${fullDay} ${getOrdinal(day)}`;
+
+    const dayShifts = shifts.filter(shift => shift.date === dateLabel);
+
+    const cell = document.createElement("div");
+    cell.className = "calendar-cell";
+    cell.innerHTML = `<strong>${day}</strong>`;
+
+    dayShifts.forEach(shift => {
+      const isFull = shift.claimedBy.length >= shift.capacity;
+
+      const line = document.createElement("div");
+      line.className = `calendar-line ${shift.role.toLowerCase()} ${isFull ? "full" : ""}`;
+      line.title = `${shift.role} ${shift.time} ${shift.claimedBy.length}/${shift.capacity}`;
+
+      cell.appendChild(line);
+    });
+
+    calendarGrid.appendChild(cell);
+  }
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  modal.querySelector(".close-modal").addEventListener("click", () => {
+    overlay.remove();
   });
 }
 

@@ -198,6 +198,140 @@ button:active {
   padding: 10px;
 }
 
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 24px 12px;
+  z-index: 999;
+  overflow-y: auto;
+}
+
+.month-modal {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 16px;
+  padding: 18px;
+  width: 100%;
+  max-width: 520px;
+  color: #e5e7eb;
+}
+
+.close-modal {
+  float: right;
+  width: auto;
+  padding: 8px 12px;
+}
+
+.overview-day {
+  border-top: 1px solid #1f2937;
+  padding: 12px 0;
+}
+
+.overview-day h4 {
+  margin: 0 0 8px;
+}
+
+.overview-line {
+  height: 8px;
+  border-radius: 999px;
+  margin: 6px 0;
+}
+
+.overview-line.bar {
+  background: #38bdf8;
+}
+
+.overview-line.pizza {
+  background: #f97316;
+}
+
+.overview-line.full {
+  background: #6b7280;
+  opacity: 0.6;
+}
+
+.calendar-modal {
+  max-width: 520px;
+}
+
+.calendar-weekdays,
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.calendar-weekdays {
+  margin: 16px 0 8px;
+  color: #cbd5e1;
+  font-size: 12px;
+  text-align: center;
+}
+
+.calendar-cell {
+  min-height: 58px;
+  background: #0b0f1a;
+  border: 1px solid #1f2937;
+  border-radius: 8px;
+  padding: 6px;
+  font-size: 12px;
+}
+
+.calendar-cell.empty {
+  background: transparent;
+  border: none;
+}
+
+.calendar-cell strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #fff;
+}
+
+.calendar-line {
+  height: 5px;
+  border-radius: 999px;
+  margin-top: 4px;
+}
+
+.calendar-line.bar {
+  background: #38bdf8;
+}
+
+.calendar-line.pizza {
+  background: #f97316;
+}
+
+.calendar-line.full {
+  background: #6b7280;
+  opacity: 0.7;
+}
+
+.calendar-legend {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  font-size: 12px;
+  margin-bottom: 10px;
+  color: #cbd5e1;
+}
+
+.calendar-legend span {
+  display: inline-block;
+  width: 12px;
+  height: 6px;
+  border-radius: 4px;
+  margin-right: 4px;
+}
+
+.legend-bar { background: #38bdf8; }
+.legend-pizza { background: #f97316; }
+.legend-full { background: #6b7280; }
+
 /* Phone layout */
 @media (max-width: 700px) {
   .logo {
