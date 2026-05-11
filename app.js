@@ -3,7 +3,7 @@ const supabaseKey = "sb_publishable_M4WS5WMH-sjVvxqDzW777A_vqtkjfJT";
 
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-console.log("Connected to Supabase:", supabaseClient);
+console.log("Supabase connected");
 
 let currentYear = 2026;
 let currentMonth = 5; // June = 5
