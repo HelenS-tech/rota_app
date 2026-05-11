@@ -184,6 +184,18 @@ function saveShifts() {
   localStorage.setItem("shifts", JSON.stringify(shifts));
 }
 
+async function uploadShiftsToSupabase() {
+  const { data, error } = await supabaseClient
+    .from("shifts")
+    .insert(shifts);
+
+  if (error) {
+    console.error("Upload error:", error);
+  } else {
+    console.log("Shifts uploaded!", data);
+  }
+}
+
 function renderShifts() {
   shiftsDiv.innerHTML = "";
 
@@ -521,3 +533,5 @@ staffSelect.addEventListener("change", function () {
 });
 
 renderShifts();
+
+uploadShiftsToSupabase();
