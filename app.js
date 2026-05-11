@@ -534,3 +534,4 @@ staffSelect.addEventListener("change", function () {
 
 renderShifts();
 
+uploadShiftsToSupabase();
