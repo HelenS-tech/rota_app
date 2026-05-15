@@ -60,10 +60,91 @@ function getOrdinal(n) {
   }
 }
 
-async function loadShiftsFromSupabase() {
+function generateShifts(year, month) {
+  const newShifts = [];
+  let id = Date.now();
+
+  let extraMonday = null;
+
+  function getWednesdayEvent(date) {
+    const day = date.getDate();
+    const weekOfMonth = Math.ceil(day / 7);
+
+    if (weekOfMonth === 1) return "Quiz Night";
+    if (weekOfMonth === 2) return "Open Mic";
+    if (weekOfMonth === 3) return "Classic Car";
+
+    const nextWeek = new Date(date);
+    nextWeek.setDate(day + 7);
+
+    if (nextWeek.getMonth() !== date.getMonth()) return "Bingo";
+
+    return "";
+  }
+
+  for (let day = 1; day <= 7; day++) {
+    const date = new Date(year, month, day);
+    const dayName = date.toLocaleDateString("en-GB", { weekday: "short" });
+
+    if (dayName === "Mon") {
+      extraMonday = day;
+      break;
+    }
+  }
+
+  for (let day = 1; day <= 31; day++) {
+    const date = new Date(year, month, day);
+    if (date.getMonth() !== month) break;
+
+    const dayName = date.toLocaleDateString("en-GB", { weekday: "short" });
+    const fullDay = date.toLocaleDateString("en-GB", { weekday: "long" });
+    const label = `${fullDay} ${getOrdinal(day)}`;
+    const week = Math.ceil(day / 7);
+
+    function addShift(role, time, capacity, event = "") {
+      newShifts.push({
+        id: id++,
+        year,
+        month,
+        week,
+        date: label,
+        event,
+        role,
+        time,
+        capacity,
+        claimedBy: []
+      });
+    }
+
+    if (day === extraMonday) {
+      addShift("Bar", "17:00 - 22:00", 2, "Biker Night");
+      addShift("Pizza", "18:00 - 20:00", 1, "Biker Night");
+      continue;
+    }
+
+    if (["Wed", "Thu", "Fri"].includes(dayName)) {
+      addShift("Bar", "16:00 - 22:00", 2, dayName === "Wed" ? getWednesdayEvent(date) : "");
+    }
+
+    if (dayName === "Sat") {
+      addShift("Bar", "14:00 - 18:00", 2);
+      addShift("Bar", "18:00 - 22:00", 2);
+    }
+
+    if (["Thu", "Fri", "Sat"].includes(dayName)) {
+      addShift("Pizza", "17:00 - 22:00", 1);
+    }
+  }
+
+  return newShifts;
+}
+
+aasync function loadShiftsFromSupabase() {
   const { data, error } = await supabaseClient
     .from("shifts")
     .select("*")
+    .eq("year", currentYear)
+    .eq("month", currentMonth)
     .order("id");
 
   if (error) {
@@ -72,8 +153,25 @@ async function loadShiftsFromSupabase() {
     return;
   }
 
-  shifts = data;
-  console.log("Loaded shifts:", shifts);
+  if (data.length === 0) {
+    const newMonthShifts = generateShifts(currentYear, currentMonth);
+
+    const { data: insertedData, error: insertError } = await supabaseClient
+      .from("shifts")
+      .insert(newMonthShifts)
+      .select();
+
+    if (insertError) {
+      console.error("Error creating month:", insertError);
+      alert("There was a problem creating this month.");
+      return;
+    }
+
+    shifts = insertedData;
+  } else {
+    shifts = data;
+  }
+
   renderShifts();
 }
 
