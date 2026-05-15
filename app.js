@@ -455,18 +455,19 @@ async function claimShift(id) {
 
   const shift = shifts.find(s => s.id === id);
 
-  const alreadyWorkingThisDay = shifts.some(otherShift => {
-    return (
-      otherShift.date === shift.date &&
-      otherShift.id !== shift.id &&
-      otherShift.claimedBy.includes(selectedStaff)
-    );
-  });
+  const alreadyWorkingDifferentRoleThisDay = shifts.some(otherShift => {
+  return (
+    otherShift.date === shift.date &&
+    otherShift.id !== shift.id &&
+    otherShift.role !== shift.role &&
+    otherShift.claimedBy.includes(selectedStaff)
+  );
+});
 
-  if (alreadyWorkingThisDay) {
-    alert("You already have a shift on this day.");
-    return;
-  }
+if (alreadyWorkingDifferentRoleThisDay) {
+  alert("You cannot claim both Bar and Pizza on the same day.");
+  return;
+}
 
   if (
     !shift.claimedBy.includes(selectedStaff) &&
