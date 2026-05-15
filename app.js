@@ -177,20 +177,20 @@ const staffPins = {
 const shiftsDiv = document.getElementById("shifts");
 const staffSelect = document.getElementById("staffSelect");
 
-function saveShifts() {
-  localStorage.setItem("shifts", JSON.stringify(shifts));
-}
-
-async function uploadShiftsToSupabase() {
+async function loadShiftsFromSupabase() {
   const { data, error } = await supabaseClient
     .from("shifts")
-    .insert(shifts);
+    .select("*")
+    .order("id");
 
   if (error) {
-    console.error("Upload error:", error);
-  } else {
-    console.log("Shifts uploaded!", data);
+    console.error("Error loading shifts:", error);
+    return;
   }
+
+  shifts = data;
+  console.log("Loaded shifts:", shifts);
+  renderShifts();
 }
 
 function renderShifts() {
@@ -529,4 +529,4 @@ staffSelect.addEventListener("change", function () {
   }
 });
 
-uploadShiftsToSupabase();
+loadShiftsFromSupabase();
