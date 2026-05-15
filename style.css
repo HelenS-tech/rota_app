@@ -151,6 +151,11 @@ button {
 button:active {
   transform: scale(0.98);
 }
+#logoutBtn {
+     display: block;
+  margin: 12px auto 0;
+  width: 140px;
+}
 
 .week-row {
   display: grid;

@@ -520,4 +520,10 @@ staffSelect.addEventListener("change", function () {
   }
 });
 
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  localStorage.removeItem("staff");
+  selectedStaff = "";
+  location.reload();
+});
+
 loadShiftsFromSupabase();
