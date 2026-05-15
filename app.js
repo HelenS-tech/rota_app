@@ -13,27 +13,33 @@ let shifts = [];
 let selectedStaff = localStorage.getItem("staff") || "";
 
 const staffNames = [
-  "Helen",
-  "Elaine",
-  "Richard",
-  "Dan",
-  "Roxy",
-  "Rachael",
-  "Jes",
-  "Harvey",
-  "Sharon"
+    "Chris",
+    "Dan",
+    "Elaine",
+    "Harvey",
+    "Helen",
+    "Richard",
+    "Roxy",
+    "Rachael",
+    "Jes",
+    "Sharon",
+    "Nathan",
+    "James"
 ];
 
 const staffPins = {
-  Helen: "1234",
-  Elaine: "5566",
-  Richard: "2345",
+  Chris: "1122",
   Dan: "6789",
+  Elaine: "5566",
+  Harvey: "5678",
+  Helen: "1234",
+  Richard: "3344",
   Roxy: "3456",
   Rachael: "4567",
   Jes: "6587",
-  Harvey: "9988",
-  Sharon: "2233"
+  Sharon: "2233",
+  Nathan: "7788",
+  James: "8899"
 };
 
 const shiftsDiv = document.getElementById("shifts");
