@@ -529,5 +529,4 @@ staffSelect.addEventListener("change", function () {
   }
 });
 
-loadShiftsFromSupabase();
-
+uploadShiftsToSupabase();
