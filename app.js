@@ -139,7 +139,7 @@ function generateShifts(year, month) {
   return newShifts;
 }
 
-aasync function loadShiftsFromSupabase() {
+async function loadShiftsFromSupabase() {
   const { data, error } = await supabaseClient
     .from("shifts")
     .select("*")
