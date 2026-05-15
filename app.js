@@ -8,145 +8,7 @@ console.log("Supabase connected");
 let currentYear = 2026;
 let currentMonth = 5; // June = 5
 let selectedWeek = 1;
-
-function getOrdinal(n) {
-  if (n > 3 && n < 21) return n + "th";
-
-  switch (n % 10) {
-    case 1:
-      return n + "st";
-    case 2:
-      return n + "nd";
-    case 3:
-      return n + "rd";
-    default:
-      return n + "th";
-  }
-}
-
-function generateShifts(year, month) {
-  const shifts = [];
-  let id = 1;
-  let extraMonday = null;
-
-  function getWednesdayEvent(date) {
-    const day = date.getDate();
-    const weekOfMonth = Math.ceil(day / 7);
-
-    if (weekOfMonth === 1) return "Quiz Night";
-    if (weekOfMonth === 2) return "Open Mic";
-    if (weekOfMonth === 3) return "Classic Car";
-
-    const nextWeek = new Date(date);
-    nextWeek.setDate(day + 7);
-
-    if (nextWeek.getMonth() !== date.getMonth()) {
-      return "Bingo";
-    }
-
-    return "";
-  }
-
-  for (let day = 1; day <= 7; day++) {
-    const date = new Date(year, month, day);
-    const dayName = date.toLocaleDateString("en-GB", { weekday: "short" });
-
-    if (dayName === "Mon") {
-      extraMonday = day;
-      break;
-    }
-  }
-
-  for (let day = 1; day <= 31; day++) {
-    const date = new Date(year, month, day);
-
-    if (date.getMonth() !== month) break;
-
-    const dayName = date.toLocaleDateString("en-GB", { weekday: "short" });
-    const fullDay = date.toLocaleDateString("en-GB", { weekday: "long" });
-    const label = `${fullDay} ${getOrdinal(day)}`;
-
-    if (day === extraMonday) {
-      shifts.push({
-        id: id++,
-        week: Math.ceil(day / 7),
-        date: label,
-        event: "Biker Night",
-        role: "Bar",
-        time: "17:00 - 22:00",
-        capacity: 2,
-        claimedBy: []
-      });
-
-      shifts.push({
-        id: id++,
-        week: Math.ceil(day / 7),
-        date: label,
-        event: "Biker Night",
-        role: "Pizza",
-        time: "18:00 - 20:00",
-        capacity: 1,
-        claimedBy: []
-      });
-
-      continue;
-    }
-
-    if (["Wed", "Thu", "Fri"].includes(dayName)) {
-      shifts.push({
-        id: id++,
-        week: Math.ceil(day / 7),
-        date: label,
-        event: dayName === "Wed" ? getWednesdayEvent(date) : "",
-        role: "Bar",
-        time: "16:00 - 22:00",
-        capacity: 2,
-        claimedBy: []
-      });
-    }
-
-    if (dayName === "Sat") {
-      shifts.push({
-        id: id++,
-        week: Math.ceil(day / 7),
-        date: label,
-        event: "",
-        role: "Bar",
-        time: "14:00 - 18:00",
-        capacity: 2,
-        claimedBy: []
-      });
-
-      shifts.push({
-        id: id++,
-        week: Math.ceil(day / 7),
-        date: label,
-        event: "",
-        role: "Bar",
-        time: "18:00 - 22:00",
-        capacity: 2,
-        claimedBy: []
-      });
-    }
-
-    if (["Thu", "Fri", "Sat"].includes(dayName)) {
-      shifts.push({
-        id: id++,
-        week: Math.ceil(day / 7),
-        date: label,
-        event: "",
-        role: "Pizza",
-        time: "17:00 - 22:00",
-        capacity: 1,
-        claimedBy: []
-      });
-    }
-  }
-
-  return shifts;
-}
-
-let shifts = []
+let shifts = [];
 
 let selectedStaff = localStorage.getItem("staff") || "";
 
@@ -177,6 +39,21 @@ const staffPins = {
 const shiftsDiv = document.getElementById("shifts");
 const staffSelect = document.getElementById("staffSelect");
 
+function getOrdinal(n) {
+  if (n > 3 && n < 21) return n + "th";
+
+  switch (n % 10) {
+    case 1:
+      return n + "st";
+    case 2:
+      return n + "nd";
+    case 3:
+      return n + "rd";
+    default:
+      return n + "th";
+  }
+}
+
 async function loadShiftsFromSupabase() {
   const { data, error } = await supabaseClient
     .from("shifts")
@@ -185,12 +62,25 @@ async function loadShiftsFromSupabase() {
 
   if (error) {
     console.error("Error loading shifts:", error);
+    alert("There was a problem loading the rota.");
     return;
   }
 
   shifts = data;
   console.log("Loaded shifts:", shifts);
   renderShifts();
+}
+
+async function saveShiftToSupabase(shift) {
+  const { error } = await supabaseClient
+    .from("shifts")
+    .update({ claimedBy: shift.claimedBy })
+    .eq("id", shift.id);
+
+  if (error) {
+    console.error("Error saving shift:", error);
+    alert("There was a problem saving this shift.");
+  }
 }
 
 function renderShifts() {
@@ -223,7 +113,6 @@ function renderShifts() {
     }
 
     selectedWeek = 1;
-    shifts = generateShifts(currentYear, currentMonth);
     renderShifts();
   });
 
@@ -236,7 +125,6 @@ function renderShifts() {
     }
 
     selectedWeek = 1;
-    shifts = generateShifts(currentYear, currentMonth);
     renderShifts();
   });
 
@@ -385,13 +273,13 @@ function showMonthOverview() {
     <button class="close-modal">Close</button>
     <h2>${monthName} ${currentYear}</h2>
 
-      <div class="calendar-legend">
+    <div class="calendar-legend">
       <span class="legend-bar"></span> Bar
       <span class="legend-pizza"></span> Pizza
       <span class="legend-full"></span> Full
     </div>
 
-      <div class="calendar-weekdays">
+    <div class="calendar-weekdays">
       <span>Mon</span>
       <span>Tue</span>
       <span>Wed</span>
@@ -434,12 +322,12 @@ function showMonthOverview() {
       const line = document.createElement("div");
       const fillPercent =
         shift.claimedBy.length === 0
-            ? 100
-            : (shift.claimedBy.length / shift.capacity) * 100;
+          ? 100
+          : (shift.claimedBy.length / shift.capacity) * 100;
 
-        line.className = `calendar-line ${shift.role.toLowerCase()} ${isFull ? "full" : ""}`;
-        line.style.width = `${fillPercent}%`;
-        line.title = `${shift.role} ${shift.time} ${shift.claimedBy.length}/${shift.capacity}`;
+      line.className = `calendar-line ${shift.role.toLowerCase()} ${isFull ? "full" : ""}`;
+      line.style.width = `${fillPercent}%`;
+      line.title = `${shift.role} ${shift.time} ${shift.claimedBy.length}/${shift.capacity}`;
 
       cell.appendChild(line);
     });
@@ -455,7 +343,7 @@ function showMonthOverview() {
   });
 }
 
-function claimShift(id) {
+async function claimShift(id) {
   if (!selectedStaff) {
     alert("Please choose your name first.");
     return;
@@ -481,25 +369,24 @@ function claimShift(id) {
     shift.claimedBy.length < shift.capacity
   ) {
     shift.claimedBy.push(selectedStaff);
+    await saveShiftToSupabase(shift);
     alert("This shift is yours!");
   }
-
-  saveShifts();
 
   renderShifts();
 }
 
-function cancelShift(id) {
+async function cancelShift(id) {
   if (!confirm("Cancel this shift?")) return;
 
   const shift = shifts.find(s => s.id === id);
 
   shift.claimedBy = shift.claimedBy.filter(name => name !== selectedStaff);
 
-  alert("You have cancelled your shift!");
-  saveShifts();
-  renderShifts();
+  await saveShiftToSupabase(shift);
 
+  alert("You have cancelled your shift!");
+  renderShifts();
 }
 
 staffNames.forEach(name => {
