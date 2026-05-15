@@ -217,7 +217,7 @@ function renderShifts() {
     }
 
     selectedWeek = 1;
-    renderShifts();
+    loadShiftsFromSupabase();
   });
 
   document.getElementById("nextMonth").addEventListener("click", () => {
@@ -229,7 +229,7 @@ function renderShifts() {
     }
 
     selectedWeek = 1;
-    renderShifts();
+    loadShiftsFromSupabase();
   });
 
   document.getElementById("overviewBtn").addEventListener("click", showMonthOverview);
