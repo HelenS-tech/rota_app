@@ -521,8 +521,11 @@ staffSelect.addEventListener("change", function () {
 });
 
 document.getElementById("logoutBtn").addEventListener("click", () => {
+  alert("You have logged out.");
+
   localStorage.removeItem("staff");
   selectedStaff = "";
+
   location.reload();
 });
 
