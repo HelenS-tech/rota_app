@@ -146,10 +146,7 @@ function generateShifts(year, month) {
   return shifts;
 }
 
-let savedShifts = localStorage.getItem("shifts");
-let shifts = savedShifts
-  ? JSON.parse(savedShifts)
-  : generateShifts(currentYear, currentMonth);
+let shifts = []
 
 let selectedStaff = localStorage.getItem("staff") || "";
 
@@ -532,5 +529,5 @@ staffSelect.addEventListener("change", function () {
   }
 });
 
-renderShifts();
+loadShiftsFromSupabase();
 
