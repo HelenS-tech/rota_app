@@ -21,7 +21,7 @@ const staffNames = [
     "Richard",
     "Roxy",
     "Rachael",
-    "Jes",
+    "Jez",
     "Sharon",
     "Nathan",
     "James"
@@ -36,7 +36,7 @@ const staffPins = {
   Richard: "3344",
   Roxy: "3456",
   Rachael: "4567",
-  Jes: "6587",
+  Jez: "6587",
   Sharon: "2233",
   Nathan: "7788",
   James: "8899"
