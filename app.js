@@ -44,6 +44,12 @@ const staffPins = {
   Sharon: "2233",  
 };
 
+const claimAccess = [
+  "Jez",
+  "Richard",
+  "Roxy"
+];
+
 const shiftsDiv = document.getElementById("shifts");
 const staffSelect = document.getElementById("staffSelect");
 
@@ -452,6 +458,11 @@ function showMonthOverview() {
 async function claimShift(id) {
   if (!selectedStaff) {
     alert("Please choose your name first.");
+    return;
+  }
+
+  if (!claimAccess.includes(selectedStaff)) {
+    alert("You can view the rota, but claiming is not open for you yet.");
     return;
   }
 
