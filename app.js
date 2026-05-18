@@ -18,13 +18,14 @@ const staffNames = [
     "Elaine",
     "Harvey",
     "Helen",
+    "James",
+    "Jez",
+    "Nathan",
+    "Rachael",
+    "Rebecca",
     "Richard",
     "Roxy",
-    "Rachael",
-    "Jez",
-    "Sharon",
-    "Nathan",
-    "James"
+    "Sharon"
 ];
 
 const staffPins = {
@@ -33,13 +34,14 @@ const staffPins = {
   Elaine: "5566",
   Harvey: "5678",
   Helen: "1234",
-  Richard: "3344",
-  Roxy: "3456",
-  Rachael: "4567",
+  James: "8899",
   Jez: "6587",
-  Sharon: "2233",
   Nathan: "7788",
-  James: "8899"
+  Rachael: "4567",
+  Rebecca: "9988",
+  Richard: "3344",
+  Roxy: "3456",  
+  Sharon: "2233",  
 };
 
 const shiftsDiv = document.getElementById("shifts");
