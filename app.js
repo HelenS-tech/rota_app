@@ -50,6 +50,8 @@ const claimAccess = [
   "Roxy"
 ];
 
+const pizzaStaff = ["Helen", "Elaine", "Roxy"];
+
 const shiftsDiv = document.getElementById("shifts");
 const staffSelect = document.getElementById("staffSelect");
 
@@ -461,12 +463,21 @@ async function claimShift(id) {
     return;
   }
 
-  if (!claimAccess.includes(selectedStaff)) {
-    alert("You can view the rota, but claiming is not open for you yet.");
-    return;
+  const shift = shifts.find(s => s.id === id);
+
+  const pizzaStaff = ["Helen", "Elaine", "Roxy"];
+
+  if (shift.role === "Pizza") {
+    if (!pizzaStaff.includes(selectedStaff)) {
+      alert("Only pizza staff can claim pizza shifts.");
+      return;
+    }
   }
 
-  const shift = shifts.find(s => s.id === id);
+  /*if (!claimAccess.includes(selectedStaff)) {
+    alert("You can view the rota, but claiming is not open for you yet.");
+    return;
+  }*/
 
   const alreadyWorkingDifferentRoleThisDay = shifts.some(otherShift => {
   return (
