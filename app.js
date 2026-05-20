@@ -704,9 +704,16 @@ async function claimShift(id) {
     !shift.claimedBy.includes(selectedStaff) &&
     shift.claimedBy.length < shift.capacity
   ) {
-    shift.claimedBy.push(selectedStaff);
-    await saveShiftToSupabase(shift);
-    alert("This shift is yours!");
+    const confirmed = confirm("This shift is yours if you want it?");
+
+if (!confirmed) {
+  return;
+}
+
+shift.claimedBy.push(selectedStaff);
+await saveShiftToSupabase(shift);
+
+alert("This Shift is yours!");
   }
 
   renderShifts();
