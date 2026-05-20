@@ -573,6 +573,19 @@ async function markFinishedChoosing() {
 
   alert("Thanks — the next person can now choose.");
 
+  if (selectedStaff === "Roxy") {
+  const { error: allError } = await supabaseClient
+    .from("claim_schedule")
+    .update({ completed: true })
+    .eq("staff_name", "All");
+
+  if (allError) {
+    console.error("Error opening to everyone:", allError);
+    alert("Roxy was marked finished, but there was a problem opening to everyone.");
+    return;
+  }
+}
+
   await loadClaimSchedule();
   updateClaimStatus();
   renderShifts();
