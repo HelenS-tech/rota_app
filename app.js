@@ -9,6 +9,7 @@ let currentYear = 2026;
 let currentMonth = 5; // June = 5
 let selectedWeek = 1;
 let shifts = [];
+let claimSchedule = [];
 
 let selectedStaff = localStorage.getItem("staff") || "";
 
@@ -185,6 +186,19 @@ async function loadShiftsFromSupabase() {
   renderShifts();
 }
 
+async function loadClaimSchedule() {
+  const { data, error } = await supabaseClient
+    .from("claim_schedule")
+    .select("*");
+
+  if (error) {
+    console.error("Error loading claim schedule:", error);
+    return;
+  }
+
+  claimSchedule = data;
+}
+
 async function saveShiftToSupabase(shift) {
   const { error } = await supabaseClient
     .from("shifts")
@@ -195,6 +209,24 @@ async function saveShiftToSupabase(shift) {
     console.error("Error saving shift:", error);
     alert("There was a problem saving this shift.");
   }
+}
+
+function canClaimBarShift() {
+  const now = new Date();
+
+  const allAccess = claimSchedule.find(row => row.staff_name === "All");
+
+  if (allAccess && allAccess.opens_at && now >= new Date(allAccess.opens_at)) {
+    return true;
+  }
+
+  const userAccess = claimSchedule.find(row => row.staff_name === selectedStaff);
+
+  if (!userAccess || !userAccess.opens_at) {
+    return false;
+  }
+
+  return now >= new Date(userAccess.opens_at);
 }
 
 function renderShifts() {
@@ -474,6 +506,13 @@ async function claimShift(id) {
     }
   }
 
+  if (shift.role === "Bar") {
+  if (!canClaimBarShift()) {
+    alert("You can view the rota, but Bar claiming is not open for you yet.");
+    return;
+  }
+}
+
   /*if (!claimAccess.includes(selectedStaff)) {
     alert("You can view the rota, but claiming is not open for you yet.");
     return;
@@ -554,4 +593,9 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
   location.reload();
 });
 
-loadShiftsFromSupabase();
+async function startApp() {
+  await loadClaimSchedule();
+  await loadShiftsFromSupabase();
+}
+
+startApp();
