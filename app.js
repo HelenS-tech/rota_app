@@ -212,28 +212,33 @@ async function saveShiftToSupabase(shift) {
 }
 
 function canClaimBarShift() {
-  console.log("Selected staff:", selectedStaff);
-  console.log("Claim schedule:", claimSchedule);
-  console.log("Now:", new Date());
-  const now = new Date();
+  const order = ["Jez", "Richard", "Roxy"];
 
-  const allAccess = claimSchedule.find(
-  row => row.staff_name.trim().toLowerCase() === "all"
-);
+  const allRow = claimSchedule.find(row =>
+    row.staff_name.trim().toLowerCase() === "all"
+  );
 
-  if (allAccess && allAccess.opens_at && now >= new Date(allAccess.opens_at)) {
+  if (allRow && allRow.completed === true) {
     return true;
   }
 
-  const userAccess = claimSchedule.find(
-  row => row.staff_name.trim().toLowerCase() === selectedStaff.trim().toLowerCase()
-);
+  const selectedIndex = order.indexOf(selectedStaff);
 
-  if (!userAccess || !userAccess.opens_at) {
+  if (selectedIndex === -1) {
     return false;
   }
 
-  return now >= new Date(userAccess.opens_at);
+  if (selectedIndex === 0) {
+    return true;
+  }
+
+  const previousPerson = order[selectedIndex - 1];
+
+  const previousRow = claimSchedule.find(row =>
+    row.staff_name.trim().toLowerCase() === previousPerson.toLowerCase()
+  );
+
+  return previousRow && previousRow.completed === true;
 }
 
 function updateClaimStatus() {
@@ -241,23 +246,49 @@ function updateClaimStatus() {
 
   if (!statusDiv) return;
 
-  const now = new Date();
+  const order = ["Jez", "Richard", "Roxy"];
 
-  const openRows = claimSchedule.filter(row => {
-    return row.opens_at && now >= new Date(row.opens_at);
-  });
-
-  const allOpen = openRows.some(row =>
+  const allRow = claimSchedule.find(row =>
     row.staff_name.trim().toLowerCase() === "all"
   );
 
-  if (allOpen) {
+  if (allRow && allRow.completed === true) {
     statusDiv.innerHTML = `
       <p>Bar claiming is now open to everyone</p>
       <p>Pizza shifts are open for pizza staff</p>
     `;
     return;
   }
+
+  let currentPerson = order[0];
+
+  for (let i = 0; i < order.length; i++) {
+    const row = claimSchedule.find(scheduleRow =>
+      scheduleRow.staff_name.trim().toLowerCase() === order[i].toLowerCase()
+    );
+
+    if (!row || row.completed !== true) {
+      currentPerson = order[i];
+      break;
+    }
+
+    if (i === order.length - 1) {
+      currentPerson = "All";
+    }
+  }
+
+  if (currentPerson === "All") {
+    statusDiv.innerHTML = `
+      <p>Bar claiming is ready to open to everyone</p>
+      <p>Pizza shifts are open for pizza staff</p>
+    `;
+  } else {
+    statusDiv.innerHTML = `
+      <p>Bar claiming is now open for ${currentPerson}</p>
+      <p>Pizza shifts are open for pizza staff</p>
+    `;
+  }
+}
 
   const openNames = openRows
     .filter(row => row.staff_name.trim().toLowerCase() !== "all")
