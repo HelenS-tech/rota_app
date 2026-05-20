@@ -212,15 +212,22 @@ async function saveShiftToSupabase(shift) {
 }
 
 function canClaimBarShift() {
+  console.log("Selected staff:", selectedStaff);
+  console.log("Claim schedule:", claimSchedule);
+  console.log("Now:", new Date());
   const now = new Date();
 
-  const allAccess = claimSchedule.find(row => row.staff_name === "All");
+  const allAccess = claimSchedule.find(
+  row => row.staff_name.trim().toLowerCase() === "all"
+);
 
   if (allAccess && allAccess.opens_at && now >= new Date(allAccess.opens_at)) {
     return true;
   }
 
-  const userAccess = claimSchedule.find(row => row.staff_name === selectedStaff);
+  const userAccess = claimSchedule.find(
+  row => row.staff_name.trim().toLowerCase() === selectedStaff.trim().toLowerCase()
+);
 
   if (!userAccess || !userAccess.opens_at) {
     return false;
