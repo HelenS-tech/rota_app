@@ -129,13 +129,13 @@ function generateShifts(year, month) {
       continue;
     }
 
-    if (["Wed", "Thu", "Fri"].includes(dayName)) {
-      addShift(
-        "Bar",
-        "16:00 - 22:00",
-        2,
-        dayName === "Wed" ? getWednesdayEvent(date) : "",
-      );
+    if (dayName === "Wed") {
+      addShift("Bar", "18:00 - 22:00", 2, getWednesdayEvent(date));
+    }
+
+    if (["Thu", "Fri"].includes(dayName)) {
+      addShift("Bar", "16:00 - 18:00", 2);
+      addShift("Bar", "18:00 - 22:00", 2);
     }
 
     if (dayName === "Sat") {
@@ -143,7 +143,7 @@ function generateShifts(year, month) {
       addShift("Bar", "18:00 - 22:00", 2);
     }
 
-    if (["Thu", "Fri", "Sat"].includes(dayName)) {
+    if (["Wed","Thu", "Fri", "Sat"].includes(dayName)) {
       addShift("Pizza", "17:00 - 22:00", 1);
     }
   }
@@ -398,7 +398,18 @@ function renderShifts() {
           ${dayEvent ? `<p class="day-event">${dayEvent}</p>` : ""}
         `;
 
-        groupedByDate[date].forEach((shift) => {
+        groupedByDate[date]
+          .sort((a, b) => {
+            if (a.role === b.role) {
+              return a.time.localeCompare(b.time);
+            }
+
+            if (a.role === "Bar") return -1;
+            if (b.role === "Bar") return 1;
+
+            return 0;
+          })
+          .forEach((shift) => {
           const shiftSlot = document.createElement("div");
           shiftSlot.className = `shift-slot ${shift.role.toLowerCase()}`;
 
@@ -467,13 +478,14 @@ function renderShifts() {
       });
 
       shiftsDiv.appendChild(weekDiv);
-    });
-}
+      });
+          
+      }
 
-function selectWeek(week) {
-  selectedWeek = week;
-  renderShifts();
-}
+      function selectWeek(week) {
+        selectedWeek = week;
+        renderShifts();
+      }
 
 function showMonthOverview() {
   const overlay = document.createElement("div");
@@ -536,7 +548,18 @@ function showMonthOverview() {
     cell.className = "calendar-cell";
     cell.innerHTML = `<strong>${day}</strong>`;
 
-    dayShifts.forEach((shift) => {
+    dayShifts
+      .sort((a, b) => {
+        if (a.role === b.role) {
+          return a.time.localeCompare(b.time);
+        }
+
+        if (a.role === "Bar") return -1;
+        if (b.role === "Bar") return 1;
+
+        return 0;
+      })
+      .forEach(shift => {
       const isFull = shift.claimedBy.length >= shift.capacity;
 
       const line = document.createElement("div");
@@ -571,7 +594,7 @@ function showMonthOverview() {
   modal.querySelector(".close-modal").addEventListener("click", () => {
     overlay.remove();
   });
-}
+};
 
 async function markFinishedChoosing() {
   if (!selectedStaff) {
@@ -610,7 +633,7 @@ async function markFinishedChoosing() {
   await loadClaimSchedule();
   updateClaimStatus();
   renderShifts();
-}
+};
 
 function updateFinishedButton() {
   const finishedBtn = document.getElementById("finishedBtn");
@@ -632,7 +655,7 @@ function updateFinishedButton() {
   } else {
     finishedBtn.style.display = "none";
   }
-}
+};
 
 async function claimShift(id) {
   if (!selectedStaff) {
@@ -687,7 +710,7 @@ async function claimShift(id) {
   }
 
   renderShifts();
-}
+};
 
 async function cancelShift(id) {
   if (!confirm("Cancel this shift?")) return;
@@ -700,7 +723,7 @@ async function cancelShift(id) {
 
   alert("You have cancelled your shift!");
   renderShifts();
-}
+};
 
 function getInitials(names) {
   if (!names || names.length === 0) return "";
@@ -708,7 +731,7 @@ function getInitials(names) {
   return names
     .map(name => name.charAt(0).toUpperCase())
     .join("");
-}
+};
 
 document.getElementById("logoutBtn").addEventListener("click", () => {
   const order = ["Jez", "Richard H", "Roxy O"];
@@ -740,7 +763,7 @@ staffNames.forEach((name) => {
   staffSelect.appendChild(option);
 });
 
-staffSelect.value = selectedStaff;
+staffSelect.value = selectedStaff,
 
 staffSelect.addEventListener("change", function () {
   const chosenName = staffSelect.value;
