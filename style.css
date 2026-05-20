@@ -425,6 +425,13 @@ button:active {
   margin: 6px 0;
 }
 
+#finishedBtn {
+  display: block;
+  width: 220px;
+  margin: 15px auto;
+  font-size: 16px;
+}
+
 @keyframes subtlePulse {
   0% {
     box-shadow: 0 0 0 rgba(0, 255, 153, 0);

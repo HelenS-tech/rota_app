@@ -536,6 +536,30 @@ function showMonthOverview() {
   });
 }
 
+async function markFinishedChoosing() {
+  if (!selectedStaff) {
+    alert("Please choose your name first.");
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from("claim_schedule")
+    .update({ completed: true })
+    .eq("staff_name", selectedStaff);
+
+  if (error) {
+    console.error("Error marking finished:", error);
+    alert("There was a problem saving this.");
+    return;
+  }
+
+  alert("Thanks — the next person can now choose.");
+
+  await loadClaimSchedule();
+  updateClaimStatus();
+  renderShifts();
+}
+
 async function claimShift(id) {
   if (!selectedStaff) {
     alert("Please choose your name first.");
@@ -645,5 +669,7 @@ async function startApp() {
   updateClaimStatus();
   await loadShiftsFromSupabase();
   }
+
+document.getElementById("finishedBtn").addEventListener("click", markFinishedChoosing);
 
 startApp();
