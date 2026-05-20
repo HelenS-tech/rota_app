@@ -2,6 +2,20 @@
   box-sizing: border-box;
 }
 
+.app-container {
+  max-width: 430px;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.week-row {
+  display: block;
+}
+
+.month-controls {
+  display: block;
+}
+
 html,
 body {
   margin: 0;
@@ -397,6 +411,18 @@ button:active {
 .partial-fill {
   color: #facc15; /* amber */
   font-weight: 600;
+}
+
+#claimStatus {
+  width: 100%;
+  text-align: center;
+  margin: 15px auto;
+  color: white;
+  font-weight: bold;
+}
+
+#claimStatus p {
+  margin: 6px 0;
 }
 
 @keyframes subtlePulse {

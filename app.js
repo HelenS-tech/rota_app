@@ -236,6 +236,46 @@ function canClaimBarShift() {
   return now >= new Date(userAccess.opens_at);
 }
 
+function updateClaimStatus() {
+  const statusDiv = document.getElementById("claimStatus");
+
+  if (!statusDiv) return;
+
+  const now = new Date();
+
+  const openRows = claimSchedule.filter(row => {
+    return row.opens_at && now >= new Date(row.opens_at);
+  });
+
+  const allOpen = openRows.some(row =>
+    row.staff_name.trim().toLowerCase() === "all"
+  );
+
+  if (allOpen) {
+    statusDiv.innerHTML = `
+      <p>Bar claiming is now open to everyone</p>
+      <p>Pizza shifts are open for pizza staff</p>
+    `;
+    return;
+  }
+
+  const openNames = openRows
+    .filter(row => row.staff_name.trim().toLowerCase() !== "all")
+    .map(row => row.staff_name);
+
+  if (openNames.length > 0) {
+    statusDiv.innerHTML = `
+      <p>Bar claiming currently open for ${openNames.join(", ")}</p>
+      <p>Pizza shifts are open for pizza staff</p>
+    `;
+  } else {
+    statusDiv.innerHTML = `
+      <p>Bar claiming is not open yet</p>
+      <p>Pizza shifts are open for pizza staff</p>
+    `;
+  }
+}
+
 function renderShifts() {
   shiftsDiv.innerHTML = "";
 
@@ -602,7 +642,8 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
 
 async function startApp() {
   await loadClaimSchedule();
+  updateClaimStatus();
   await loadShiftsFromSupabase();
-}
+  }
 
 startApp();
