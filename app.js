@@ -327,6 +327,54 @@ function updateCancelledShiftAlert() {
     .join("");
 }
 
+function getDayNumberFromDateLabel(dateLabel) {
+  const match = dateLabel.match(/\d+/);
+  return match ? Number(match[0]) : null;
+}
+
+function updateUnclaimedShiftAlert() {
+  const alertDiv = document.getElementById("unclaimedShiftAlert");
+  if (!alertDiv) return;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const tenDaysFromNow = new Date(today);
+  tenDaysFromNow.setDate(today.getDate() + 10);
+
+  const unclaimedSoon = shifts.filter(shift => {
+    const dayNumber = getDayNumberFromDateLabel(shift.date);
+    if (!dayNumber) return false;
+
+    const shiftDate = new Date(shift.year, shift.month, dayNumber);
+    shiftDate.setHours(0, 0, 0, 0);
+
+    const isWithinNext10Days =
+      shiftDate >= today && shiftDate <= tenDaysFromNow;
+
+    const isNotFull = shift.claimedBy.length < shift.capacity;
+
+    return isWithinNext10Days && isNotFull;
+  });
+
+  if (unclaimedSoon.length === 0) {
+    alertDiv.innerHTML = "";
+    return;
+  }
+
+  alertDiv.innerHTML = `
+    <div class="unclaimed-alert-box">
+      <strong>Unclaimed shifts in the next 10 days:</strong>
+      ${unclaimedSoon
+        .map(
+          shift =>
+            `<div>${shift.date} • ${shift.role} • ${shift.time}</div>`
+        )
+        .join("")}
+    </div>
+  `;
+}
+
 function renderShifts() {
   shiftsDiv.innerHTML = "";
 
@@ -754,6 +802,7 @@ alert("This Shift is yours!");
 
   renderShifts();
   updateCancelledShiftAlert();
+  updateUnclaimedShiftAlert();
 };
 
 async function cancelShift(id) {
@@ -772,6 +821,7 @@ async function cancelShift(id) {
   alert("You have cancelled your shift!");
   renderShifts();
   updateCancelledShiftAlert();
+  updateUnclaimedShiftAlert();
 };
 
 function getInitials(names) {
@@ -867,6 +917,7 @@ async function startApp() {
   updateFinishedButton();
   await loadShiftsFromSupabase();
   updateCancelledShiftAlert();
+  updateUnclaimedShiftAlert();
 }
 
 startApp();
