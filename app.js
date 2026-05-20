@@ -290,22 +290,9 @@ function updateClaimStatus() {
   }
 }
 
-  const openNames = openRows
-    .filter(row => row.staff_name.trim().toLowerCase() !== "all")
-    .map(row => row.staff_name);
+  
+  
 
-  if (openNames.length > 0) {
-    statusDiv.innerHTML = `
-      <p>Bar claiming currently open for ${openNames.join(", ")}</p>
-      <p>Pizza shifts are open for pizza staff</p>
-    `;
-  } else {
-    statusDiv.innerHTML = `
-      <p>Bar claiming is not open yet</p>
-      <p>Pizza shifts are open for pizza staff</p>
-    `;
-  }
-}
 
 function renderShifts() {
   shiftsDiv.innerHTML = "";
