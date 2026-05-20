@@ -313,12 +313,7 @@ button:active {
   color: #fff;
 }
 
-.calendar-line {
-  height: 5px;
-  border-radius: 999px;
-  margin-top: 4px;
-  min-width: 12px;
-}
+
 
 .calendar-line.bar {
   background: #38bdf8;
@@ -328,10 +323,7 @@ button:active {
   background: #f97316;
 }
 
-.calendar-line.full {
-  background: #6b7280;
-  opacity: 0.7;
-}
+
 
 .calendar-legend {
   display: flex;
@@ -430,6 +422,23 @@ button:active {
   width: 220px;
   margin: 15px auto;
   font-size: 16px;
+}
+
+.calendar-line {
+  min-height: 16px;
+  font-size: 10px;
+  line-height: 16px;
+  text-align: center;
+  color: #ffffff;
+  font-weight: 700;
+  overflow: hidden;
+  border-radius: 8px;
+  text-shadow: 0 0 3px rgba(0,0,0,0.7);
+}
+
+.calendar-line.full {
+  background: #6b7280;
+  color: #ffffff;
 }
 
 @keyframes subtlePulse {
