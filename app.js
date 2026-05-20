@@ -203,7 +203,12 @@ async function loadClaimSchedule() {
 async function saveShiftToSupabase(shift) {
   const { error } = await supabaseClient
     .from("shifts")
-    .update({ claimedBy: shift.claimedBy })
+    .update({
+  claimedBy: shift.claimedBy,
+  recentlyCancelled: shift.recentlyCancelled,
+  cancelledBy: shift.cancelledBy,
+  cancelledAt: shift.cancelledAt
+})
     .eq("id", shift.id);
 
   if (error) {
@@ -256,8 +261,8 @@ function updateClaimStatus() {
 
   if (allRow && allRow.completed === true) {
     statusDiv.innerHTML = `
-      <p>Bar claiming is now open to everyone</p>
-      <p>Pizza shifts are open for pizza staff</p>
+      <p>Bar: Open to all staff</p>
+      <p>Food: Open to kitchen staff</p>
     `;
     return;
   }
@@ -282,13 +287,13 @@ function updateClaimStatus() {
 
   if (currentPerson === "All") {
     statusDiv.innerHTML = `
-      <p>Bar claiming is ready to open to everyone</p>
-      <p>Pizza shifts are open for pizza staff</p>
+      <p>Bar: Open to all staff</p>
+      <p>Food: Open to kitchen staff</p>
     `;
   } else {
     statusDiv.innerHTML = `
-      <p>Bar claiming is now open for ${currentPerson}</p>
-      <p>Pizza shifts are open for pizza staff</p>
+      <p>Bar shifts: Priority access for ${currentPerson}</p>
+      <p>Food: Open to kitchen staff</p>
     `;
   }
 }
@@ -432,6 +437,7 @@ function renderShifts() {
             </div>
 
             <p>${shift.claimedBy.length}/${shift.capacity} filled</p>
+            ${shift.recentlyCancelled ? `<p class="cancel-alert">Recently available</p>` : ""}
 
             <div class="shift-progress">
               <div 
@@ -725,6 +731,10 @@ async function cancelShift(id) {
   const shift = shifts.find((s) => s.id === id);
 
   shift.claimedBy = shift.claimedBy.filter((name) => name !== selectedStaff);
+
+  shift.recentlyCancelled = true;
+  shift.cancelledBy = selectedStaff;
+  shift.cancelledAt = new Date().toISOString();
 
   await saveShiftToSupabase(shift);
 

@@ -409,15 +409,22 @@ button:active {
 }
 
 #claimStatus {
-  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 12px;
+  margin: 18px auto;
+  width: 90%;
   text-align: center;
-  margin: 15px auto;
-  color: white;
-  font-weight: bold;
+  box-shadow: 0 0 12px rgba(0,255,180,0.08);
 }
 
 #claimStatus p {
   margin: 6px 0;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
 }
 
 #finishedBtn {
@@ -442,6 +449,18 @@ button:active {
 .calendar-line.full {
   background: #6b7280;
   color: #ffffff;
+}
+
+.cancel-alert {
+  color: #facc15;
+  font-weight: bold;
+  background: rgba(250, 204, 21, 0.12);
+  border: 1px solid rgba(250, 204, 21, 0.35);
+  border-radius: 999px;
+  padding: 4px 10px;
+  display: inline-block;
+  margin: 6px 0;
+  font-size: 13px;
 }
 
 @keyframes subtlePulse {
