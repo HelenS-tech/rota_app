@@ -201,20 +201,25 @@ async function loadClaimSchedule() {
 }
 
 async function saveShiftToSupabase(shift) {
+  const updateData = {
+    claimedBy: shift.claimedBy,
+    recentlyCancelled: shift.recentlyCancelled || false,
+    cancelledBy: shift.cancelledBy || null,
+    cancelledAt: shift.cancelledAt || null
+  };
+
   const { error } = await supabaseClient
     .from("shifts")
-    .update({
-  claimedBy: shift.claimedBy,
-  recentlyCancelled: shift.recentlyCancelled,
-  cancelledBy: shift.cancelledBy,
-  cancelledAt: shift.cancelledAt
-})
+    .update(updateData)
     .eq("id", shift.id);
 
-  if (error) {
-    console.error("Error saving shift:", error);
-    alert("There was a problem saving this shift.");
-  }
+    if (error) {
+      console.error("Error saving shift:", error);
+      alert("There was a problem saving this shift.");
+      return false;
+    }
+
+  return true;
 }
 
 function canClaimBarShift() {
@@ -296,6 +301,30 @@ function updateClaimStatus() {
       <p>Food: Open to kitchen staff</p>
     `;
   }
+}
+
+function updateCancelledShiftAlert() {
+  const alertDiv = document.getElementById("cancelledShiftAlert");
+
+  const cancelledShifts = shifts.filter(
+    shift => shift.recentlyCancelled === true
+  );
+
+  if (cancelledShifts.length === 0) {
+    alertDiv.innerHTML = "";
+    return;
+  }
+
+  alertDiv.innerHTML = cancelledShifts
+    .map(
+      shift => `
+        <div class="cancelled-alert-box">
+          Recently available:
+          ${shift.date} • ${shift.role} • ${shift.time}
+        </div>
+      `
+    )
+    .join("");
 }
 
 function renderShifts() {
@@ -686,12 +715,7 @@ async function claimShift(id) {
       return;
     }
   }
-
-  /*if (!claimAccess.includes(selectedStaff)) {
-    alert("You can view the rota, but claiming is not open for you yet.");
-    return;
-  }*/
-
+  
   const alreadyWorkingDifferentRoleThisDay = shifts.some((otherShift) => {
     return (
       otherShift.date === shift.date &&
@@ -717,12 +741,19 @@ if (!confirmed) {
 }
 
 shift.claimedBy.push(selectedStaff);
-await saveShiftToSupabase(shift);
+shift.recentlyCancelled = false;
+shift.cancelledBy = null;
+shift.cancelledAt = null;
+
+const saved = await saveShiftToSupabase(shift);
+
+if (!saved) return;
 
 alert("This Shift is yours!");
   }
 
   renderShifts();
+  updateCancelledShiftAlert();
 };
 
 async function cancelShift(id) {
@@ -740,6 +771,7 @@ async function cancelShift(id) {
 
   alert("You have cancelled your shift!");
   renderShifts();
+  updateCancelledShiftAlert();
 };
 
 function getInitials(names) {
@@ -834,6 +866,7 @@ async function startApp() {
   updateClaimStatus();
   updateFinishedButton();
   await loadShiftsFromSupabase();
+  updateCancelledShiftAlert();
 }
 
 startApp();
