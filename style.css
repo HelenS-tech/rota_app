@@ -277,6 +277,7 @@ button:active {
 
 .calendar-modal {
   max-width: 520px;
+  overflow-x: auto;
 }
 
 .calendar-weekdays,
@@ -284,6 +285,7 @@ button:active {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 6px;
+  overflow-x: auto;
 }
 
 .calendar-weekdays {
@@ -300,6 +302,7 @@ button:active {
   border-radius: 8px;
   padding: 6px;
   font-size: 12px;
+  min-width: 58px;
 }
 
 .calendar-cell.empty {
