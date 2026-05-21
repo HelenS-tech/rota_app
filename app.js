@@ -336,7 +336,7 @@ function updateUnclaimedShiftAlert() {
   const alertDiv = document.getElementById("unclaimedShiftAlert");
   if (!alertDiv) return;
 
-  const today = new Date();
+  const today = new Date(2026, 5, 1); // June 1st 2026
   today.setHours(0, 0, 0, 0);
 
   const tenDaysFromNow = new Date(today);
@@ -356,6 +356,17 @@ function updateUnclaimedShiftAlert() {
 
     return isWithinNext10Days && isNotFull;
   });
+
+  unclaimedSoon.sort((a, b) => {
+  const dayA = getDayNumberFromDateLabel(a.date);
+  const dayB = getDayNumberFromDateLabel(b.date);
+
+  if (dayA !== dayB) {
+    return dayA - dayB;
+  }
+
+  return a.time.localeCompare(b.time);
+});
 
   if (unclaimedSoon.length === 0) {
     alertDiv.innerHTML = "";
