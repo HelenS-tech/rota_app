@@ -10,6 +10,7 @@ let currentMonth = 5; // June = 5
 let selectedWeek = 1;
 let shifts = [];
 let claimSchedule = [];
+let monthRelease = [];
 
 let selectedStaff = localStorage.getItem("staff") || "";
 
@@ -336,7 +337,7 @@ function updateUnclaimedShiftAlert() {
   const alertDiv = document.getElementById("unclaimedShiftAlert");
   if (!alertDiv) return;
 
-  const today = new Date(2026, 5, 1); // June 1st 2026
+  const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   const tenDaysFromNow = new Date(today);
@@ -384,6 +385,24 @@ function updateUnclaimedShiftAlert() {
         .join("")}
     </div>
   `;
+}
+
+function isMonthReleased(year, month) {
+  const release = monthRelease.find(row =>
+    row.year === year && row.month === month
+  );
+
+  // If no release rule exists, allow claiming
+  if (!release) {
+    return true;
+  }
+
+  // If release exists but no date set, block
+  if (!release.opens_at) {
+    return false;
+  }
+
+  return new Date() >= new Date(release.opens_at);
 }
 
 function renderShifts() {
@@ -758,6 +777,10 @@ async function claimShift(id) {
   }
 
   const shift = shifts.find((s) => s.id === id);
+  if (!isMonthReleased(shift.year, shift.month)) {
+  alert("This month is not open for claiming yet.");
+  return;
+}
 
   const pizzaStaff = ["Helen", "Elaine", "Roxy O"];
 
@@ -924,11 +947,25 @@ document
 
 async function startApp() {
   await loadClaimSchedule();
+  await loadMonthRelease();
   updateClaimStatus();
   updateFinishedButton();
   await loadShiftsFromSupabase();
   updateCancelledShiftAlert();
   updateUnclaimedShiftAlert();
+}
+
+async function loadMonthRelease() {
+  const { data, error } = await supabaseClient
+    .from("month_release")
+    .select("*");
+
+  if (error) {
+    console.error("Error loading month release:", error);
+    return;
+  }
+
+  monthRelease = data;
 }
 
 startApp();
