@@ -389,22 +389,20 @@ function updateUnclaimedShiftAlert() {
 
 function isMonthReleased(year, month) {
   const release = monthRelease.find(row =>
-    row.year === year && row.month === month
+    Number(row.year) === Number(year) &&
+    Number(row.month) === Number(month)
   );
 
-  // If no release rule exists, allow claiming
   if (!release) {
     return true;
   }
 
-  // If release exists but no date set, block
   if (!release.opens_at) {
     return false;
   }
 
   return new Date() >= new Date(release.opens_at);
 }
-
 function renderShifts() {
   shiftsDiv.innerHTML = "";
 
@@ -932,28 +930,7 @@ staffSelect.addEventListener("change", function () {
   }
 });
 
-document.getElementById("logoutBtn").addEventListener("click", function () {
-  const order = ["Jez Stone", "Richard H", "Roxy O"];
 
-  const currentRow = claimSchedule.find(
-    (row) =>
-      row.staff_name.trim().toLowerCase() === selectedStaff.toLowerCase(),
-  );
-
-  if (
-    order.includes(selectedStaff) &&
-    currentRow &&
-    currentRow.completed !== true
-  ) {
-    alert('Please press "I’ve finished choosing" before logging out.');
-    return;
-  }
-
-  localStorage.removeItem("staff");
-  selectedStaff = "";
-  alert("You have logged out.");
-  location.reload();
-});
 
 document
   .getElementById("finishedBtn")
