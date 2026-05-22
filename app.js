@@ -881,19 +881,31 @@ function getInitials(names) {
 document.getElementById("logoutBtn").addEventListener("click", () => {
   const order = ["Jez Stone", "Richard H", "Roxy O"];
 
-  const currentRow = claimSchedule.find(
-    (row) =>
-      row.staff_name.trim().toLowerCase() === selectedStaff.toLowerCase(),
+let currentPriorityPerson = null;
+
+for (let i = 0; i < order.length; i++) {
+  const row = claimSchedule.find(scheduleRow =>
+    scheduleRow.staff_name.trim().toLowerCase() === order[i].toLowerCase()
   );
 
-  if (
-    order.includes(selectedStaff) &&
-    currentRow &&
-    currentRow.completed !== true
-  ) {
-    alert('Please press "I’ve finished choosing" before logging out.');
-    return;
+  if (!row || row.completed !== true) {
+    currentPriorityPerson = order[i];
+    break;
   }
+}
+
+const currentRow = claimSchedule.find(row =>
+  row.staff_name.trim().toLowerCase() === selectedStaff.toLowerCase()
+);
+
+if (
+  selectedStaff === currentPriorityPerson &&
+  currentRow &&
+  currentRow.completed !== true
+) {
+  alert('Please press "I’ve finished choosing" before logging out.');
+  return;
+}
 
   localStorage.removeItem("staff");
   selectedStaff = "";
