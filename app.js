@@ -776,15 +776,21 @@ async function claimShift(id) {
     return;
   }
 
+  const shift = shifts.find((s) => s.id === id);
+
+  if (!shift) {
+    alert("Shift not found.");
+    return;
+  }
+
   console.log("Trying to claim:", shift.date, shift.month, shift.year);
   console.log("Month release:", monthRelease);
   console.log("Released?", isMonthReleased(shift.year, shift.month));
 
-  const shift = shifts.find((s) => s.id === id);
   if (!isMonthReleased(shift.year, shift.month)) {
-  alert("This month is not open for claiming yet.");
-  return;
-}
+    alert("This month is not open for claiming yet.");
+    return;
+  }
 
   const pizzaStaff = ["Helen", "Elaine", "Roxy O"];
 
