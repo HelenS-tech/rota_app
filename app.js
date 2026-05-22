@@ -21,9 +21,9 @@ const staffNames = [
   "Harvey",
   "Helen",
   "James",
-  "Jez",
+  "Jez Stone",
   "Nathan",
-  "Rachael A",
+  "Rachel",
   "Rebecca",
   "Richard H",
   "Roxy O",
@@ -37,16 +37,16 @@ const staffPins = {
   Harvey: "5678",
   Helen: "1234",
   James: "8899",
-  Jez: "6587",
+  "Jez Stone": "6587",
   Nathan: "7788",
-  "Rachael A": "4567",
+  "Rachel": "4567",
   Rebecca: "9988",
   "Richard H": "3344",
   "Roxy O": "3456",
   Sharon: "2233",
 };
 
-const claimAccess = ["Jez", "Richard H", "Roxy O"];
+const claimAccess = ["Jez Stone", "Richard H", "Roxy O"];
 
 const pizzaStaff = ["Helen", "Elaine", "Roxy O"];
 
@@ -125,7 +125,7 @@ function generateShifts(year, month) {
     }
 
     if (day === extraMonday) {
-      addShift("Bar", "17:00 - 22:00", 2, "Biker Night");
+      addShift("Bar", "17:00 - 22:00", 1, "Biker Night");
       addShift("Pizza", "18:00 - 20:00", 1, "Biker Night");
       continue;
     }
@@ -224,7 +224,7 @@ async function saveShiftToSupabase(shift) {
 }
 
 function canClaimBarShift() {
-  const order = ["Jez", "Richard H", "Roxy O"];
+  const order = ["Jez Stone", "Richard H", "Roxy O"];
 
   const allRow = claimSchedule.find(
     (row) => row.staff_name.trim().toLowerCase() === "all",
@@ -259,7 +259,7 @@ function updateClaimStatus() {
 
   if (!statusDiv) return;
 
-  const order = ["Jez", "Richard H", "Roxy O"];
+  const order = ["Jez Stone", "Richard H", "Roxy O"];
 
   const allRow = claimSchedule.find(
     (row) => row.staff_name.trim().toLowerCase() === "all",
@@ -752,7 +752,7 @@ function updateFinishedButton() {
   const finishedBtn = document.getElementById("finishedBtn");
   if (!finishedBtn) return;
 
-  const order = ["Jez", "Richard H", "Roxy O"];
+  const order = ["Jez Stone", "Richard H", "Roxy O"];
 
   const allRow = claimSchedule.find(
     (row) => row.staff_name.trim().toLowerCase() === "all",
@@ -775,6 +775,10 @@ async function claimShift(id) {
     alert("Please choose your name first.");
     return;
   }
+
+  console.log("Trying to claim:", shift.date, shift.month, shift.year);
+  console.log("Month release:", monthRelease);
+  console.log("Released?", isMonthReleased(shift.year, shift.month));
 
   const shift = shifts.find((s) => s.id === id);
   if (!isMonthReleased(shift.year, shift.month)) {
@@ -867,7 +871,7 @@ function getInitials(names) {
 };
 
 document.getElementById("logoutBtn").addEventListener("click", () => {
-  const order = ["Jez", "Richard H", "Roxy O"];
+  const order = ["Jez Stone", "Richard H", "Roxy O"];
 
   const currentRow = claimSchedule.find(
     (row) =>
@@ -919,7 +923,7 @@ staffSelect.addEventListener("change", function () {
 });
 
 document.getElementById("logoutBtn").addEventListener("click", function () {
-  const order = ["Jez", "Richard H", "Roxy O"];
+  const order = ["Jez Stone", "Richard H", "Roxy O"];
 
   const currentRow = claimSchedule.find(
     (row) =>
