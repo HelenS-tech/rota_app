@@ -778,6 +778,10 @@ async function claimShift(id) {
 
   const shift = shifts.find((s) => s.id === id);
 
+  console.log("SHIFT BEING CLAIMED:", shift);
+console.log("MONTH RELEASE DATA:", monthRelease);
+console.log("MONTH RELEASED?", isMonthReleased(shift.year, shift.month));
+
   if (!shift) {
     alert("Shift not found.");
     return;
@@ -975,6 +979,7 @@ async function loadMonthRelease() {
     return;
   }
 
+  console.log("Loaded month release:", data);
   monthRelease = data;
 }
 
