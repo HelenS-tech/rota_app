@@ -752,8 +752,8 @@ function updateFinishedButton() {
 
   const order = ["Jez Stone", "Richard H", "Roxy O"];
 
-  const allRow = claimSchedule.find(
-    (row) => row.staff_name.trim().toLowerCase() === "all",
+  const allRow = claimSchedule.find(row =>
+    row.staff_name.trim().toLowerCase() === "all"
   );
 
   if (allRow && allRow.completed === true) {
@@ -761,13 +761,25 @@ function updateFinishedButton() {
     return;
   }
 
-  if (order.includes(selectedStaff)) {
+  let currentPriorityPerson = null;
+
+  for (let i = 0; i < order.length; i++) {
+    const row = claimSchedule.find(scheduleRow =>
+      scheduleRow.staff_name.trim().toLowerCase() === order[i].toLowerCase()
+    );
+
+    if (!row || row.completed !== true) {
+      currentPriorityPerson = order[i];
+      break;
+    }
+  }
+
+  if (selectedStaff === currentPriorityPerson) {
     finishedBtn.style.display = "block";
   } else {
     finishedBtn.style.display = "none";
   }
-};
-
+}
 async function claimShift(id) {
   if (!selectedStaff) {
     alert("Please choose your name first.");
