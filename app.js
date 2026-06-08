@@ -191,7 +191,9 @@ async function loadShiftsFromSupabase() {
 async function loadClaimSchedule() {
   const { data, error } = await supabaseClient
     .from("claim_schedule")
-    .select("*");
+    .select("*")
+    .eq("year", currentYear)
+    .eq("month", currentMonth);
 
   if (error) {
     console.error("Error loading claim schedule:", error);
@@ -226,32 +228,28 @@ async function saveShiftToSupabase(shift) {
 function canClaimBarShift() {
   const order = ["Jez Stone", "Richard H", "Roxy O"];
 
-  const allRow = claimSchedule.find(
-    (row) => row.staff_name.trim().toLowerCase() === "all",
+  const allRow = claimSchedule.find(row =>
+    row.staff_name.trim().toLowerCase() === "all"
   );
 
   if (allRow && allRow.completed === true) {
     return true;
   }
 
-  const selectedIndex = order.indexOf(selectedStaff);
+  let currentPriorityPerson = null;
 
-  if (selectedIndex === -1) {
-    return false;
+  for (let i = 0; i < order.length; i++) {
+    const row = claimSchedule.find(scheduleRow =>
+      scheduleRow.staff_name.trim().toLowerCase() === order[i].toLowerCase()
+    );
+
+    if (!row || row.completed !== true) {
+      currentPriorityPerson = order[i];
+      break;
+    }
   }
 
-  if (selectedIndex === 0) {
-    return true;
-  }
-
-  const previousPerson = order[selectedIndex - 1];
-
-  const previousRow = claimSchedule.find(
-    (row) =>
-      row.staff_name.trim().toLowerCase() === previousPerson.toLowerCase(),
-  );
-
-  return previousRow && previousRow.completed === true;
+  return selectedStaff === currentPriorityPerson;
 }
 
 function updateClaimStatus() {
@@ -436,7 +434,11 @@ function renderShifts() {
     }
 
     selectedWeek = 1;
-    loadShiftsFromSupabase();
+    loadClaimSchedule().then(() => {
+      updateClaimStatus();
+      updateFinishedButton();
+      loadShiftsFromSupabase();
+    });
   });
 
   document.getElementById("nextMonth").addEventListener("click", () => {
@@ -448,7 +450,11 @@ function renderShifts() {
     }
 
     selectedWeek = 1;
-    loadShiftsFromSupabase();
+    loadClaimSchedule().then(() => {
+      updateClaimStatus();
+      updateFinishedButton();
+      loadShiftsFromSupabase();
+    });
   });
 
   document
