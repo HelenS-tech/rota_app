@@ -5,8 +5,10 @@ const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
 console.log("Supabase connected");
 
-let currentYear = 2026;
-let currentMonth = 5; // June = 5
+const today = new Date();
+
+let currentMonth = today.getMonth();
+let currentYear = today.getFullYear();
 let selectedWeek = 1;
 let shifts = [];
 let claimSchedule = [];
@@ -665,6 +667,10 @@ function showMonthOverview() {
     cell.className = "calendar-cell";
     cell.innerHTML = `<strong>${day}</strong>`;
 
+    cell.addEventListener("click", () => {
+      showDayShiftPopup(dateLabel, dayShifts);
+    });
+
     dayShifts
       .sort((a, b) => {
         if (a.role === b.role) {
@@ -712,6 +718,104 @@ function showMonthOverview() {
     overlay.remove();
   });
 };
+
+function showDayShiftPopup(dateLabel, dayShifts) {
+  const overlay = document.createElement("div");
+  overlay.className = "modal-overlay";
+
+  const modal = document.createElement("div");
+  modal.className = "day-shift-modal";
+
+  const sortedShifts = [...dayShifts].sort((a, b) => {
+    if (a.role === b.role) {
+      return a.time.localeCompare(b.time);
+    }
+
+    if (a.role === "Bar") return -1;
+    if (b.role === "Bar") return 1;
+
+    return 0;
+  });
+
+  modal.innerHTML = `
+    <button class="close-modal">Close</button>
+    <h2>${dateLabel}</h2>
+    <div class="day-shift-list"></div>
+  `;
+
+  const list = modal.querySelector(".day-shift-list");
+
+  sortedShifts.forEach(shift => {
+    const shiftDiv = document.createElement("div");
+    shiftDiv.className = `shift-slot ${shift.role.toLowerCase()}`;
+
+    const isMine = shift.claimedBy.includes(selectedStaff);
+    const isFull = shift.claimedBy.length >= shift.capacity;
+
+    shiftDiv.innerHTML = `
+      <div class="shift-header ${shift.role.toLowerCase()}">
+        <strong>${shift.role}</strong>
+        <span>${shift.time}</span>
+      </div>
+
+      ${shift.recentlyCancelled ? `<p class="cancel-alert">Recently available</p>` : ""}
+
+      <p>${shift.claimedBy.length}/${shift.capacity} filled</p>
+
+      <p class="${
+        shift.claimedBy.length === 0
+          ? "available"
+          : shift.claimedBy.length < shift.capacity
+            ? "partial-fill"
+            : "full-fill"
+      }">
+        ${
+          shift.claimedBy.length === 0
+            ? "Available"
+            : shift.claimedBy.length < shift.capacity
+              ? `${shift.claimedBy.length} of ${shift.capacity} taken (${shift.claimedBy.join(", ")})`
+              : `Full (${shift.claimedBy.join(", ")})`
+        }
+      </p>
+
+      ${
+        isMine
+          ? `<button class="popup-cancel-btn">Cancel Shift</button>`
+          : !isFull
+            ? `<button class="popup-claim-btn">Claim Shift</button>`
+            : `<p class="full-fill">Full</p>`
+      }
+    `;
+
+    const claimBtn = shiftDiv.querySelector(".popup-claim-btn");
+    const cancelBtn = shiftDiv.querySelector(".popup-cancel-btn");
+
+    if (claimBtn) {
+      claimBtn.addEventListener("click", async () => {
+        await claimShift(shift.id);
+        overlay.remove();
+        showMonthOverview();
+      });
+    }
+
+    if (cancelBtn) {
+      cancelBtn.addEventListener("click", async () => {
+        await cancelShift(shift.id);
+        overlay.remove();
+        showMonthOverview();
+      });
+    }
+
+    list.appendChild(shiftDiv);
+  });
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  modal.querySelector(".close-modal").addEventListener("click", () => {
+    overlay.remove();
+  });
+}
 
 async function markFinishedChoosing() {
   if (!selectedStaff) {
