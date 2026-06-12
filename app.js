@@ -62,9 +62,9 @@ const staffPins = {
   Sharon: "2233",
 };
 
-const claimAccess = ["Jez Stone", "Richard H", "Roxy O"];
+const claimAccess = ["Jez Stone", "Rachel Wade", "Richard H",];
 
-const pizzaStaff = ["Helen", "Elaine", "Roxy O"];
+const pizzaStaff = ["Helen", "Elaine", "Roxy O", "Harvey",];
 
 const shiftsDiv = document.getElementById("shifts");
 const staffSelect = document.getElementById("staffSelect");
@@ -240,7 +240,7 @@ async function saveShiftToSupabase(shift) {
 }
 
 function canClaimBarShift() {
-  const order = ["Jez Stone", "Richard H", "Roxy O"];
+  const order = ["Jez Stone", "Rachel Wade", "Richard H",];
 
   const allRow = claimSchedule.find(
     (row) => row.staff_name.trim().toLowerCase() === "all",
@@ -272,7 +272,7 @@ function updateClaimStatus() {
 
   if (!statusDiv) return;
 
-  const order = ["Jez Stone", "Richard H", "Roxy O"];
+  const order = ["Jez Stone", "Rachel Wade", "Richard H",];
 
   const allRow = claimSchedule.find(
     (row) => row.staff_name.trim().toLowerCase() === "all",
@@ -1014,7 +1014,7 @@ async function markFinishedChoosing() {
 
   alert("Thanks — the next person can now choose.");
 
-  if (selectedStaff === "Roxy O") {
+  if (selectedStaff === "Richard H") {
     const { error: allError } = await supabaseClient
       .from("claim_schedule")
       .update({ completed: true })
@@ -1023,7 +1023,7 @@ async function markFinishedChoosing() {
     if (allError) {
       console.error("Error opening to everyone:", allError);
       alert(
-        "Roxy was marked finished, but there was a problem opening to everyone.",
+        "Richard H was marked finished, but there was a problem opening to everyone.",
       );
       return;
     }
@@ -1038,7 +1038,7 @@ function updateFinishedButton() {
   const finishedBtn = document.getElementById("finishedBtn");
   if (!finishedBtn) return;
 
-  const order = ["Jez Stone", "Richard H", "Roxy O"];
+  const order = ["Jez Stone", "Rachel Wade", "Richard H",];
 
   const allRow = claimSchedule.find(
     (row) => row.staff_name.trim().toLowerCase() === "all",
@@ -1195,7 +1195,7 @@ function getInitials(names) {
 }
 
 document.getElementById("logoutBtn").addEventListener("click", () => {
-  const order = ["Jez Stone", "Richard H", "Roxy O"];
+  const order = ["Jez Stone", "Rachel Wade", "Richard H",];
 
   let currentPriorityPerson = null;
 
