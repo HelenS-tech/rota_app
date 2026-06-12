@@ -1,19 +1,13 @@
+/* =========================
+   SmartShift - style.css
+   Cleaned and organised
+========================= */
+
+/* =========================
+   Base / Global
+========================= */
 * {
   box-sizing: border-box;
-}
-
-.app-container {
-  max-width: 430px;
-  margin: 0 auto;
-  padding: 10px;
-}
-
-.week-row {
-  display: block;
-}
-
-.month-controls {
-  display: block;
 }
 
 html,
@@ -22,6 +16,53 @@ body {
   background: #0b0f1a;
   color: #e5e7eb;
   font-family: Arial, sans-serif;
+}
+
+body {
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  color: #ffffff;
+}
+
+h2 {
+  text-align: center;
+  font-size: 28px;
+}
+
+button {
+  background: linear-gradient(90deg, #00c6ff, #00ff99);
+  border: none;
+  color: #000;
+  font-weight: bold;
+  border-radius: 12px;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+select {
+  background: #111827;
+  color: #e5e7eb;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+/* =========================
+   App Layout / Header
+========================= */
+.app-container {
+  max-width: 430px;
+  margin: 0 auto;
+  padding: 10px;
 }
 
 .header {
@@ -65,6 +106,9 @@ body {
   margin: 0 8px;
 }
 
+/* =========================
+   User Controls
+========================= */
 .user-bar {
   display: flex;
   justify-content: center;
@@ -77,95 +121,6 @@ body {
   font-weight: bold;
 }
 
-select {
-  background: #111827;
-  color: #e5e7eb;
-  border: 1px solid #334155;
-  border-radius: 6px;
-  padding: 6px 10px;
-}
-
-#shifts {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 16px;
-}
-
-h1,
-h2,
-h3,
-h4 {
-  color: #ffffff;
-}
-
-h2 {
-  text-align: center;
-  font-size: 28px;
-  margin-bottom: 24px;
-}
-
-.month-controls {
-  display: flex;
-  justify-content: center;
-  gap: 14px;
-  margin-bottom: 32px;
-}
-
-button {
-  background: linear-gradient(90deg, #00c6ff, #00ff99);
-  border: none;
-  color: #000;
-  font-weight: bold;
-  border-radius: 12px;
-  padding: 10px 16px;
-  cursor: pointer;
-}
-
-.month-controls button {
-  width: 190px;
-}
-
-.shift-slot button {
-  width: 170px;
-  display: block;
-  margin: 12px auto 0;
-}
-
-.shift-header {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-/* BAR */
-.shift-header.bar strong {
-  color: #38bdf8; /* blue */
-}
-
-/* PIZZA */
-.shift-header.pizza strong {
-  color: #f97316; /* orange */
-}
-
-.shift-slot.bar {
-  border-left: 4px solid #38bdf8;
-}
-
-.shift-slot.pizza {
-  border-left: 4px solid #f97316;
-}
-
-.shift-header span {
-  color: #cbd5e1;
-  font-size: 14px;
-}
-
-button:active {
-  transform: scale(0.98);
-}
-
 #logoutBtn {
   display: block;
   width: 140px;
@@ -173,278 +128,16 @@ button:active {
   text-align: center;
 }
 
-.week-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-bottom: 34px;
-}
-
-.week-row h3 {
-  grid-column: 1 / -1;
-  margin-bottom: 0;
-}
-
-.day-card {
-  background: #111827;
-  border: 1px solid #1f2937;
-  border-radius: 14px;
-  padding: 18px;
-  color: #e5e7eb;
-}
-
-.day-event {
-  display: inline-block;
-  background: rgba(0, 255, 153, 0.12);
-  color: #00ff99;
-  border: 1px solid rgba(0, 255, 153, 0.3);
-  border-radius: 999px;
-  padding: 5px 10px;
-  font-size: 13px;
-  font-weight: 700;
-  margin: 4px 0 14px;
-}
-
-.shift-slot {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid #1f2937;
-  border-radius: 12px;
-  padding: 14px;
-  margin-top: 14px;
-}
-
-.my-shift {
-  background: rgba(0, 255, 153, 0.08);
-  border-radius: 10px;
-  padding: 10px;
-}
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 24px 12px;
-  z-index: 999;
-  overflow-y: auto;
-}
-
-.month-modal {
-  background: #111827;
-  border: 1px solid #1f2937;
-  border-radius: 16px;
-  padding: 18px;
-  width: 100%;
-  max-width: 520px;
-  color: #e5e7eb;
-}
-
-.close-modal {
-  float: right;
-  width: auto;
-  padding: 8px 12px;
-}
-
-.overview-shift-bar {
-  width: 100%;
-  min-height: 15px;
-  margin: 4px 0;
-  border-radius: 8px;
-  font-size: 0.6rem;
-  line-height: 15px;
-  text-align: center;
-  color: #111827;
-  font-weight: 700;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.overview-shift-bar.bar {
-  background: #4cc9f0;
-}
-
-.overview-shift-bar.pizza {
-  background: #ff7a1a;
-}
-
-.overview-shift-bar:empty::after {
-  content: "";
-}
-
-This will make the main calendar lo
-
-.overview-day {
-  border-top: 1px solid #1f2937;
-  padding: 12px 0;
-}
-
-.overview-day h4 {
-  margin: 0 0 8px;
-}
-
-.overview-line {
-  height: 8px;
-  border-radius: 999px;
-  margin: 6px 0;
-}
-
-.overview-line.bar {
-  background: #38bdf8;
-}
-
-.overview-line.pizza {
-  background: #f97316;
-}
-
-.overview-line.full {
-  background: #6b7280;
-  opacity: 0.6;
-}
-
-.calendar-modal {
-  max-width: 520px;
-  overflow-x: auto;
-}
-
-.calendar-day-header {
-  text-align: center;
-  font-weight: 700;
-  font-size: 0.75rem;
-  color: #ffffff;
-  padding: 4px 0;
-}
-
-.calendar-weekdays,
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
-  overflow-x: auto;
-}
-
-.calendar-weekdays {
-  margin: 16px 0 8px;
-  color: #cbd5e1;
-  font-size: 12px;
-  text-align: center;
-}
-
-.calendar-cell {
-  min-height: 95px;
-  padding: 6px;
-  border: 1px solid #243044;
-  border-radius: 8px;
-  background: #0b1020;
-  font-size: 0.75rem;
-  overflow: hidden;
-} 
-
-.calendar-cell.empty {
-  background: transparent;
-  border: none;
-}
-
-.calendar-cell strong {
+#finishedBtn {
   display: block;
-  margin-bottom: 6px;
-  font-size: 0.85rem;
+  width: 220px;
+  margin: 15px auto;
+  font-size: 16px;
 }
 
-
-
-.calendar-line.bar {
-  background: #38bdf8;
-}
-
-.calendar-line.pizza {
-  background: #f97316;
-}
-
-
-
-.calendar-legend {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  font-size: 12px;
-  margin-bottom: 10px;
-  color: #cbd5e1;
-}
-
-.calendar-legend span {
-  display: inline-block;
-  width: 12px;
-  height: 6px;
-  border-radius: 4px;
-  margin-right: 4px;
-}
-
-.legend-bar { background: #38bdf8; }
-.legend-pizza { background: #f97316; }
-.legend-full { background: #6b7280; }
-
-.week-tabs {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  justify-items: center;
-  margin-bottom: 24px;
-}
-
-.week-tabs button:last-child:nth-child(5) {
-  grid-column: 2 / 4;
-  justify-self: center;
-  width: 65px; /* 👈 match other buttons */
-}
-
-.week-tabs button {
-  width: auto;
-  padding: 8px 12px;
-}
-
-.week-tabs .active-week {
-  background: #18c226;
-  color: #e5e7eb;
-  font-weight: bold;
-  box-shadow: 0 0 12px rgba(0, 255, 153, 0.35);
-}
-
-.you-are-working {
-  color: #00ff99;
-  font-weight: 700;
-  font-size: 13px;
-  margin: 8px 0;
-}
-
-.claimed-shift {
-  border: 1px solid #00ff99;
-  background: linear-gradient(180deg, rgba(0,255,153,0.08), transparent);
-  box-shadow: 0 0 10px rgba(0,255,153,0.15);
-  transition: all 0.2s ease;
-}
-
-.claimed-shift p:last-child {
-  color: #f87171; /* soft red */
-  font-weight: 600;
-}
-
-.my-shift {
-  border: 2px solid #00ff99;
-  box-shadow: 0 0 14px rgba(0,255,153,0.35);
-}
-
-.shift-slot:not(.claimed-shift) button {
-  animation: subtlePulse 2.5s infinite;
-}
-
-.partial-fill {
-  color: #facc15; /* amber */
-  font-weight: 600;
-}
-
+/* =========================
+   Status / Alerts
+========================= */
 #claimStatus {
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.08);
@@ -462,42 +155,6 @@ This will make the main calendar lo
   font-size: 15px;
   font-weight: 600;
   line-height: 1.4;
-}
-
-#finishedBtn {
-  display: block;
-  width: 220px;
-  margin: 15px auto;
-  font-size: 16px;
-}
-
-.calendar-line {
-  min-height: 16px;
-  font-size: 10px;
-  line-height: 16px;
-  text-align: center;
-  color: #ffffff;
-  font-weight: 700;
-  overflow: hidden;
-  border-radius: 8px;
-  text-shadow: 0 0 3px rgba(0,0,0,0.7);
-}
-
-.calendar-line.full {
-  background: #6b7280;
-  color: #ffffff;
-}
-
-.cancel-alert {
-  color: #facc15;
-  font-weight: bold;
-  background: rgba(250, 204, 21, 0.12);
-  border: 1px solid rgba(250, 204, 21, 0.35);
-  border-radius: 999px;
-  padding: 4px 10px;
-  display: inline-block;
-  margin: 6px 0;
-  font-size: 13px;
 }
 
 #cancelledShiftAlert {
@@ -540,46 +197,61 @@ This will make the main calendar lo
   margin-top: 5px;
 }
 
-.calendar-cell {
-  cursor: pointer;
+.cancel-alert {
+  color: #facc15;
+  font-weight: bold;
+  background: rgba(250, 204, 21, 0.12);
+  border: 1px solid rgba(250, 204, 21, 0.35);
+  border-radius: 999px;
+  padding: 4px 10px;
+  display: inline-block;
+  margin: 6px 0;
+  font-size: 13px;
 }
 
-.calendar-cell:hover {
-  transform: scale(1.03);
-}
-
-.day-shift-modal {
-  background: #111827;
-  color: #ffffff;
-  border-radius: 16px;
-  padding: 18px;
-  width: 90%;
-  max-width: 380px;
-  max-height: 85vh;
-  overflow-y: auto;
-  box-shadow: 0 0 20px rgba(0, 255, 153, 0.2);
-}
-
-.day-shift-list .shift-slot {
-  margin-bottom: 14px;
-}
-
+/* =========================
+   Main Calendar View
+========================= */
 #shifts {
   display: none;
 }
 
-.month-overview-btn {
-  display: block;
-  margin: 1rem auto;
+.main-month-view {
+  width: 100%;
+  max-width: 760px;
+  margin: 1.5rem auto;
+  padding-bottom: 0.5rem;
+  overflow-x: hidden;
 }
 
-.main-month-view {
-  margin-top: 1.5rem;
+.main-month-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+  margin: 1.5rem auto 1rem;
+  max-width: 600px;
+}
+
+.main-month-header button {
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+}
+
+.main-month-header button:first-child {
+  justify-self: start;
+}
+
+.main-month-header button:last-child {
+  justify-self: end;
 }
 
 .main-month-title {
+  margin: 0;
   text-align: center;
-  margin-bottom: 1rem;
+  font-size: 28px;
 }
 
 .calendar-key {
@@ -612,116 +284,206 @@ This will make the main calendar lo
   background: #ff7a1a;
 }
 
-.spacer-cell {
-  visibility: hidden;
-}
-
 .calendar-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 6px;
+  width: 100%;
+}
+
+.calendar-day-header {
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: #ffffff;
+  padding: 4px 0;
 }
 
 .calendar-cell {
-  min-height: 95px;
+  min-height: 92px;
+  min-width: 0;
   padding: 6px;
   border: 1px solid #243044;
   border-radius: 8px;
   background: #0b1020;
   font-size: 0.75rem;
   overflow: hidden;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.calendar-cell:hover {
+  transform: scale(1.03);
 }
 
 .calendar-cell strong {
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   font-size: 0.85rem;
 }
 
-.calendar-shift-line {
-  display: block;
-  margin: 3px 0;
-  padding: 3px 4px;
-  border-radius: 5px;
-  font-size: 0.65rem;
-  line-height: 1.1;
-  white-space: nowrap;
+.spacer-cell {
+  visibility: hidden;
+}
+
+.overview-shift-bar {
+  width: 100%;
+  min-height: 15px;
+  line-height: 15px;
+  margin: 4px 0;
+  padding: 0 3px;
+  border-radius: 8px;
+  font-size: 0.58rem;
+  text-align: center;
+  color: #111827;
+  font-weight: 700;
   overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
 }
 
-.calendar-shift-line.bar {
-  border-left: 4px solid #4cc9f0;
+.overview-shift-bar.bar {
+  background: #4cc9f0;
 }
 
-.calendar-shift-line.pizza {
-  border-left: 4px solid #ff7a1a;
+.overview-shift-bar.pizza {
+  background: #ff7a1a;
 }
 
-.main-month-header {
+.overview-shift-bar.full {
+  background: #6b7280;
+  color: #ffffff;
+}
+
+.overview-shift-bar:empty::after {
+  content: "";
+}
+
+/* =========================
+   Shift Cards / Legacy Detailed View
+   Hidden currently, kept as backup
+========================= */
+.week-row {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 10px;
-  margin: 1.5rem auto 1rem;
-  max-width: 600px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 34px;
 }
 
-.main-month-header button {
-  padding: 8px 14px;
+.week-row h3 {
+  grid-column: 1 / -1;
+  margin-bottom: 0;
+}
+
+.day-card {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 14px;
+  padding: 18px;
+  color: #e5e7eb;
+}
+
+.day-event {
+  display: inline-block;
+  background: rgba(0, 255, 153, 0.12);
+  color: #00ff99;
+  border: 1px solid rgba(0, 255, 153, 0.3);
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 13px;
+  font-weight: 700;
+  margin: 4px 0 14px;
+}
+
+.shift-slot {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid #1f2937;
   border-radius: 12px;
-  border: none;
-  cursor: pointer;
+  padding: 14px;
+  margin-top: 14px;
 }
 
-.main-month-header button:first-child {
-  justify-self: start;
+.shift-slot.bar {
+  border-left: 4px solid #38bdf8;
 }
 
-.main-month-header button:last-child {
-  justify-self: end;
+.shift-slot.pizza {
+  border-left: 4px solid #f97316;
 }
 
-.main-month-title {
-  margin: 0;
-  text-align: center;
+.shift-slot.full {
+  opacity: 0.7;
 }
 
+.shift-slot button {
+  width: 170px;
+  display: block;
+  margin: 12px auto 0;
+}
 
-@keyframes subtlePulse {
-  0% {
-    box-shadow: 0 0 0 rgba(0, 255, 153, 0);
-  }
+.shift-slot:not(.claimed-shift) button {
+  animation: subtlePulse 2.5s infinite;
+}
 
-  50% {
-    box-shadow: 0 0 14px rgba(0, 255, 153, 0.35);
-  }
+.shift-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 10px;
+}
 
-  100% {
-    box-shadow: 0 0 0 rgba(0, 255, 153, 0);
-  }
+.shift-header.bar strong {
+  color: #38bdf8;
+}
+
+.shift-header.pizza strong {
+  color: #f97316;
+}
+
+.shift-header span {
+  color: #cbd5e1;
+  font-size: 14px;
+}
+
+.my-shift {
+  border: 2px solid #00ff99;
+  border-radius: 10px;
+  padding: 10px;
+  background: rgba(0, 255, 153, 0.08);
+  box-shadow: 0 0 14px rgba(0,255,153,0.35);
+}
+
+.claimed-shift {
+  border: 1px solid #00ff99;
+  background: linear-gradient(180deg, rgba(0,255,153,0.08), transparent);
+  box-shadow: 0 0 10px rgba(0,255,153,0.15);
+  transition: all 0.2s ease;
 }
 
 .claimed-shift button {
   animation: none;
 }
 
+.you-are-working {
+  color: #00ff99;
+  font-weight: 700;
+  font-size: 13px;
+  margin: 8px 0;
+}
+
 .available {
-  color: #9ca3af; /* soft grey */
+  color: #9ca3af;
 }
 
 .partial-fill {
-  color: #facc15; /* amber */
+  color: #facc15;
   font-weight: 600;
 }
 
 .full-fill {
-  color: #f87171; /* red */
+  color: #f87171;
   font-weight: 700;
-}
-
-.shift-slot.full {
-  opacity: 0.7;
 }
 
 .shift-progress {
@@ -747,77 +509,219 @@ This will make the main calendar lo
   background: #f97316;
 }
 
-.main-month-view {
-  width: 100%;
-  max-width: 760px;
-  margin: 1.5rem auto;
+/* =========================
+   Modals / Popups
+========================= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 24px 12px;
+  z-index: 999;
+  overflow-y: auto;
+}
+
+.month-modal,
+.day-shift-modal {
+  background: #111827;
+  color: #ffffff;
+  border: 1px solid #1f2937;
+  border-radius: 16px;
+  padding: 18px;
+  width: 90%;
+  max-width: 380px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 0 20px rgba(0, 255, 153, 0.2);
+}
+
+.month-modal {
+  max-width: 520px;
+  color: #e5e7eb;
+}
+
+.close-modal {
+  float: right;
+  width: auto;
+  padding: 8px 12px;
+}
+
+.day-shift-list .shift-slot {
+  margin-bottom: 14px;
+}
+
+/* =========================
+   Optional Old Overview Modal Styles
+========================= */
+.overview-day {
+  border-top: 1px solid #1f2937;
+  padding: 12px 0;
+}
+
+.overview-day h4 {
+  margin: 0 0 8px;
+}
+
+.overview-line {
+  height: 8px;
+  border-radius: 999px;
+  margin: 6px 0;
+}
+
+.overview-line.bar {
+  background: #38bdf8;
+}
+
+.overview-line.pizza {
+  background: #f97316;
+}
+
+.overview-line.full {
+  background: #6b7280;
+  opacity: 0.6;
+}
+
+.calendar-modal {
+  max-width: 520px;
   overflow-x: auto;
-  padding-bottom: 0.5rem;
 }
 
-.calendar-grid {
+.calendar-weekdays {
   display: grid;
-  grid-template-columns: repeat(7, minmax(70px, 1fr));
+  grid-template-columns: repeat(7, 1fr);
   gap: 6px;
-  min-width: 520px;
+  margin: 16px 0 8px;
+  color: #cbd5e1;
+  font-size: 12px;
+  text-align: center;
 }
 
-.calendar-cell {
-  min-height: 92px;
-  padding: 6px;
-  box-sizing: border-box;
+.calendar-line {
+  min-height: 16px;
+  font-size: 10px;
+  line-height: 16px;
+  text-align: center;
+  color: #ffffff;
+  font-weight: 700;
+  overflow: hidden;
+  border-radius: 8px;
+  text-shadow: 0 0 3px rgba(0,0,0,0.7);
 }
 
-.overview-shift-bar {
-  min-height: 15px;
-  line-height: 15px;
-  font-size: 0.58rem;
-  padding: 0 3px;
+.calendar-line.bar {
+  background: #38bdf8;
 }
 
-@media (max-width: 480px) {
+.calendar-line.pizza {
+  background: #f97316;
+}
+
+.calendar-line.full {
+  background: #6b7280;
+}
+
+.calendar-legend {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  font-size: 12px;
+  margin-bottom: 10px;
+  color: #cbd5e1;
+}
+
+.calendar-legend span {
+  display: inline-block;
+  width: 12px;
+  height: 6px;
+  border-radius: 4px;
+  margin-right: 4px;
+}
+
+.legend-bar { background: #38bdf8; }
+.legend-pizza { background: #f97316; }
+.legend-full { background: #6b7280; }
+
+/* =========================
+   Week Tabs / Old Controls
+========================= */
+.month-controls {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 32px;
+}
+
+.month-controls button {
+  width: 190px;
+}
+
+.week-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  justify-items: center;
+  margin-bottom: 24px;
+}
+
+.week-tabs button {
+  width: auto;
+  padding: 8px 12px;
+}
+
+.week-tabs button:last-child:nth-child(5) {
+  grid-column: 2 / 4;
+  justify-self: center;
+  width: 65px;
+}
+
+.week-tabs .active-week {
+  background: #18c226;
+  color: #e5e7eb;
+  font-weight: bold;
+  box-shadow: 0 0 12px rgba(0, 255, 153, 0.35);
+}
+
+.month-overview-btn {
+  display: block;
+  margin: 1rem auto;
+}
+
+/* =========================
+   Animation
+========================= */
+@keyframes subtlePulse {
+  0% {
+    box-shadow: 0 0 0 rgba(0, 255, 153, 0);
+  }
+
+  50% {
+    box-shadow: 0 0 14px rgba(0, 255, 153, 0.35);
+  }
+
+  100% {
+    box-shadow: 0 0 0 rgba(0, 255, 153, 0);
+  }
+}
+
+/* =========================
+   Responsive Styles
+========================= */
+@media (max-width: 700px) {
   body {
     padding: 0.5rem;
   }
 
   .logo {
-    max-width: 260px;
-  }
-
-  .main-month-header {
-    grid-template-columns: auto 1fr auto;
-    gap: 8px;
-  }
-
-  .main-month-title {
-    font-size: 1.5rem;
-  }
-
-  .main-month-header button {
-    font-size: 0.75rem;
-    padding: 8px 10px;
-    white-space: nowrap;
-  }
-
-  .calendar-day-header {
-    font-size: 0.7rem;
-  }
-
-  .calendar-grid {
-    grid-template-columns: repeat(7, 72px);
-    min-width: 540px;
-  }
-
-  .calendar-cell {
-    min-height: 92px;
-  }
-}
-
-/* Phone layout */
-@media (max-width: 700px) {
-  .logo {
     max-width: 240px;
     width: 85%;
+  }
+
+  .user-bar {
+    flex-wrap: wrap;
+    margin-bottom: 24px;
   }
 
   #shifts {
@@ -851,5 +755,52 @@ This will make the main calendar lo
 
   h2 {
     font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-month-view {
+    overflow-x: hidden;
+  }
+
+  .main-month-header {
+    grid-template-columns: auto 1fr auto;
+    gap: 8px;
+  }
+
+  .main-month-title {
+    font-size: 1.45rem;
+  }
+
+  .main-month-header button {
+    font-size: 0.72rem;
+    padding: 8px 9px;
+    white-space: nowrap;
+  }
+
+  .calendar-grid {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    min-width: 0;
+    gap: 4px;
+  }
+
+  .calendar-day-header {
+    font-size: 0.62rem;
+  }
+
+  .calendar-cell {
+    min-height: 86px;
+    padding: 4px;
+  }
+
+  .calendar-cell strong {
+    font-size: 0.72rem;
+  }
+
+  .overview-shift-bar {
+    min-height: 13px;
+    line-height: 13px;
+    font-size: 0.42rem;
+    padding: 0 1px;
   }
 }
