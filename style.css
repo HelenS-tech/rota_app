@@ -523,6 +523,10 @@ button:active {
   margin-bottom: 14px;
 }
 
+#shifts {
+  display: none;
+}
+
 
 @keyframes subtlePulse {
   0% {
