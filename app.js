@@ -62,9 +62,9 @@ const staffPins = {
   Sharon: "2233",
 };
 
-const claimAccess = ["Jez Stone", "Rachel Wade", "Richard H",];
+const claimAccess = ["Jez Stone", "Rachel Wade", "Richard H"];
 
-const pizzaStaff = ["Helen", "Elaine", "Roxy O", "Harvey",];
+const pizzaStaff = ["Helen", "Elaine", "Roxy O", "Harvey"];
 
 const shiftsDiv = document.getElementById("shifts");
 const staffSelect = document.getElementById("staffSelect");
@@ -240,7 +240,7 @@ async function saveShiftToSupabase(shift) {
 }
 
 function canClaimBarShift() {
-  const order = ["Jez Stone", "Rachel Wade", "Richard H",];
+  const order = ["Jez Stone", "Rachel Wade", "Richard H"];
 
   const allRow = claimSchedule.find(
     (row) => row.staff_name.trim().toLowerCase() === "all",
@@ -272,7 +272,7 @@ function updateClaimStatus() {
 
   if (!statusDiv) return;
 
-  const order = ["Jez Stone", "Rachel Wade", "Richard H",];
+  const order = ["Jez Stone", "Rachel Wade", "Richard H"];
 
   const allRow = claimSchedule.find(
     (row) => row.staff_name.trim().toLowerCase() === "all",
@@ -996,6 +996,7 @@ function showDayShiftPopup(dateLabel, dayShifts) {
 }
 
 async function markFinishedChoosing() {
+  console.log("Finished choosing clicked by:", selectedStaff, currentYear, currentMonth);
   if (!selectedStaff) {
     alert("Please choose your name first.");
     return;
@@ -1004,7 +1005,9 @@ async function markFinishedChoosing() {
   const { error } = await supabaseClient
     .from("claim_schedule")
     .update({ completed: true })
-    .eq("staff_name", selectedStaff);
+    .eq("staff_name", selectedStaff)
+    .eq("year", currentYear)
+    .eq("month", currentMonth);
 
   if (error) {
     console.error("Error marking finished:", error);
@@ -1018,10 +1021,12 @@ async function markFinishedChoosing() {
     const { error: allError } = await supabaseClient
       .from("claim_schedule")
       .update({ completed: true })
-      .eq("staff_name", "All");
+      .eq("staff_name", "All")
+      .eq("year", currentYear)
+      .eq("month", currentMonth);
 
     if (allError) {
-      console.error("Error opening to everyone:", allError);
+      console.error("Error opening shifts to all:", allError);
       alert(
         "Richard H was marked finished, but there was a problem opening to everyone.",
       );
@@ -1031,14 +1036,16 @@ async function markFinishedChoosing() {
 
   await loadClaimSchedule();
   updateClaimStatus();
+  updateFinishedButton();
   renderShifts();
+  renderMainMonthView();
 }
 
 function updateFinishedButton() {
   const finishedBtn = document.getElementById("finishedBtn");
   if (!finishedBtn) return;
 
-  const order = ["Jez Stone", "Rachel Wade", "Richard H",];
+  const order = ["Jez Stone", "Rachel Wade", "Richard H"];
 
   const allRow = claimSchedule.find(
     (row) => row.staff_name.trim().toLowerCase() === "all",
@@ -1195,7 +1202,7 @@ function getInitials(names) {
 }
 
 document.getElementById("logoutBtn").addEventListener("click", () => {
-  const order = ["Jez Stone", "Rachel Wade", "Richard H",];
+  const order = ["Jez Stone", "Rachel Wade", "Richard H"];
 
   let currentPriorityPerson = null;
 
