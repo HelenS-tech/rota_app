@@ -500,40 +500,69 @@ This will make the main calendar lo
   font-size: 13px;
 }
 
-#cancelledShiftAlert {
+##cancelledShiftAlert {
+  margin: 1rem auto;
   width: 90%;
-  margin: 10px auto;
+  max-width: 360px;
+  padding: 0;
 }
 
 .cancelled-alert-box {
-  background: rgba(250, 204, 21, 0.12);
-  border: 1px solid rgba(250, 204, 21, 0.35);
-  color: #facc15;
-  padding: 10px 14px;
-  border-radius: 12px;
-  margin-bottom: 8px;
-  font-weight: 600;
+  background: linear-gradient(
+    135deg,
+    rgba(250, 204, 21, 0.18),
+    rgba(0, 255, 153, 0.12)
+  );
+  border: 1px solid rgba(250, 204, 21, 0.55);
+  color: #fde047;
+  padding: 12px 14px;
+  border-radius: 16px;
+  font-weight: 700;
   text-align: center;
+  box-shadow: 0 0 14px rgba(250, 204, 21, 0.18);
+}
+
+.cancelled-alert-box h3 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  color: #fde047;
+}
+
+.cancelled-scroll-list {
+  max-height: 85px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.cancelled-scroll-list div {
+  margin: 4px 0;
 }
 
 #unclaimedShiftAlert {
-  max-height: 120px;
+  max-height: 115px;
   overflow-y: auto;
-  padding: 14px;
+  padding: 0;
   margin: 1rem auto;
   width: 90%;
-  max-width: 520px;
+  max-width: 360px;
 }
 
 .unclaimed-alert-box {
-  background: rgba(248, 113, 113, 0.12);
-  border: 1px solid rgba(248, 113, 113, 0.4);
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.35);
   color: #fecaca;
-  padding: 10px 14px;
-  border-radius: 12px;
-  margin-bottom: 8px;
+  padding: 12px 14px;
+  border-radius: 16px;
   font-weight: 600;
   text-align: center;
+  font-size: 0.9rem;
+}
+
+.unclaimed-alert-box strong,
+.unclaimed-alert-box h3 {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 1rem;
 }
 
 .unclaimed-alert-box div {

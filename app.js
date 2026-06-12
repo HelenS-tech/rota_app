@@ -325,25 +325,32 @@ function updateClaimStatus() {
 function updateCancelledShiftAlert() {
   const alertDiv = document.getElementById("cancelledShiftAlert");
 
-  const cancelledShifts = shifts.filter(
+  if (!alertDiv) {
+    return;
+  }
+
+  const recentlyCancelled = shifts.filter(
     (shift) => shift.recentlyCancelled === true,
   );
 
-  if (cancelledShifts.length === 0) {
+  if (recentlyCancelled.length === 0) {
     alertDiv.innerHTML = "";
     return;
   }
 
-  alertDiv.innerHTML = cancelledShifts
-    .map(
-      (shift) => `
-        <div class="cancelled-alert-box">
-          Recently available:
-          ${shift.date} • ${shift.role} • ${shift.time}
-        </div>
-      `,
-    )
-    .join("");
+  alertDiv.innerHTML = `
+    <div class="cancelled-alert-box">
+      <h3>Recently available:</h3>
+      <div class="cancelled-scroll-list">
+       ${recentlyCancelled
+         .map(
+           (shift) =>
+             `<div class="cancelled-alert-item">${shift.date} ${monthNames[Number(shift.month)]} • ${shift.role} • ${shift.time}</div>`,
+         )
+         .join("")}
+      </div>
+    </div>
+  `;
 }
 
 function getDayNumberFromDateLabel(dateLabel) {
@@ -393,15 +400,18 @@ function updateUnclaimedShiftAlert() {
   }
 
   alertDiv.innerHTML = `
-    <div class="unclaimed-alert-box">
-      <strong>Unclaimed shifts in the next 10 days:</strong>
+  <div class="unclaimed-alert-box">
+    <h3>Unclaimed shifts in the next 10 days:</h3>
+    <div class="unclaimed-scroll-list">
       ${unclaimedSoon
         .map(
-          (shift) => `<div>${shift.date} • ${shift.role} • ${shift.time}</div>`,
+          (shift) =>
+            `<div>${shift.date} ${monthNames[Number(shift.month)]} • ${shift.role} • ${shift.time}</div>`,
         )
         .join("")}
     </div>
-  `;
+  </div>
+`;
 }
 
 function isMonthReleased(year, month) {
@@ -897,11 +907,16 @@ function showDayShiftPopup(dateLabel, dayShifts) {
     return 0;
   });
 
+  const popupDateTitle =
+    dayShifts.length > 0
+      ? `${dayShifts[0].date} ${monthNames[Number(dayShifts[0].month)]} ${dayShifts[0].year}`
+      : dateLabel;
+
   modal.innerHTML = `
-    <button class="close-modal">Close</button>
-    <h2>${dateLabel}</h2>
-    <div class="day-shift-list"></div>
-  `;
+  <button class="close-modal">Close</button>
+  <h2>${popupDateTitle}</h2>
+  <div class="day-shift-list"></div>
+`;
 
   const list = modal.querySelector(".day-shift-list");
 
@@ -1135,9 +1150,25 @@ async function claimShift(id) {
 }
 
 async function cancelShift(id) {
-  if (!confirm("Cancel this shift?")) return;
-
   const shift = shifts.find((s) => s.id === id);
+
+  if (!shift) {
+    alert("Shift not found.");
+    return;
+  }
+
+  const shiftDateNumber = parseInt(shift.date.match(/\d+/)?.[0], 10);
+  const shiftDate = new Date(shift.year, shift.month, shiftDateNumber);
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  if (shiftDate < today) {
+    alert("You cannot cancel a shift that has already passed.");
+    return;
+  }
+
+  if (!confirm("Cancel this shift?")) return;
 
   shift.claimedBy = shift.claimedBy.filter((name) => name !== selectedStaff);
 
@@ -1148,7 +1179,8 @@ async function cancelShift(id) {
   await saveShiftToSupabase(shift);
 
   alert("You have cancelled your shift!");
-  renderShifts();
+  await loadShiftsFromSupabase();
+  renderMainMonthView();
   updateCancelledShiftAlert();
   updateUnclaimedShiftAlert();
 }
