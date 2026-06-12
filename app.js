@@ -935,7 +935,7 @@ function showDayShiftPopup(dateLabel, dayShifts) {
       claimBtn.addEventListener("click", async () => {
         await claimShift(shift.id);
         overlay.remove();
-        showMonthOverview();
+        renderMainMonthView();
       });
     }
 
@@ -943,7 +943,7 @@ function showDayShiftPopup(dateLabel, dayShifts) {
       cancelBtn.addEventListener("click", async () => {
         await cancelShift(shift.id);
         overlay.remove();
-        showMonthOverview();
+        renderMainMonthView();
       });
     }
 
