@@ -88,7 +88,7 @@ function generateShifts(year, month) {
   const newShifts = [];
   let id = Date.now();
 
-  let extraMonday = null;
+  let mondayCount = 0;
 
   function getWednesdayEvent(date) {
     const day = date.getDate();
@@ -106,18 +106,9 @@ function generateShifts(year, month) {
     return "";
   }
 
-  for (let day = 1; day <= 7; day++) {
-    const date = new Date(year, month, day);
-    const dayName = date.toLocaleDateString("en-GB", { weekday: "short" });
-
-    if (dayName === "Mon") {
-      extraMonday = day;
-      break;
-    }
-  }
-
   for (let day = 1; day <= 31; day++) {
     const date = new Date(year, month, day);
+
     if (date.getMonth() !== month) break;
 
     const dayName = date.toLocaleDateString("en-GB", { weekday: "short" });
@@ -140,10 +131,14 @@ function generateShifts(year, month) {
       });
     }
 
-    if (day === extraMonday) {
-      addShift("Bar", "17:00 - 22:00", 1, "Biker Night");
-      addShift("Pizza", "18:00 - 20:00", 1, "Biker Night");
-      continue;
+    if (dayName === "Mon") {
+      mondayCount++;
+
+      if (mondayCount === 3) {
+        addShift("Bar", "17:00 - 22:00", 1, "Biker Night");
+        addShift("Pizza", "18:00 - 20:00", 1, "Biker Night");
+        continue;
+      }
     }
 
     if (dayName === "Wed") {
@@ -853,7 +848,14 @@ function renderMainMonthView() {
 
     const cell = document.createElement("div");
     cell.className = "calendar-cell";
-    cell.innerHTML = `<strong>${day}</strong>`;
+    const eventShift = dayShifts.find((shift) => shift.event);
+
+    cell.innerHTML = `
+  <div class="calendar-date-row">
+    <strong>${day}</strong>
+    ${eventShift ? `<span class="calendar-event-label">${eventShift.event}</span>` : ""}
+  </div>
+`;
 
     const sortedDayShifts = [...dayShifts].sort((a, b) => {
       if (a.role === "Bar" && b.role !== "Bar") return -1;
@@ -872,7 +874,6 @@ function renderMainMonthView() {
 
       cell.appendChild(line);
     });
-
     if (dayShifts.length > 0) {
       cell.addEventListener("click", () => {
         showDayShiftPopup(dateLabel, dayShifts);
@@ -932,6 +933,8 @@ function showDayShiftPopup(dateLabel, dayShifts) {
         <strong>${shift.role}</strong>
         <span>${shift.time}</span>
       </div>
+
+      ${shift.event ? `<p class="shift-event-label">${shift.event}</p>` : ""}
 
       ${shift.recentlyCancelled ? `<p class="cancel-alert">Recently available</p>` : ""}
 

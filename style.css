@@ -317,6 +317,33 @@ select {
   gap: 6px;
 }
 
+.calendar-date-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 5px;
+}
+
+.calendar-date-row strong {
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.calendar-event-label {
+  display: inline-block;
+  padding: 2px 5px;
+  border-radius: 999px;
+  background: rgba(0, 255, 153, 0.14);
+  border: 1px solid rgba(0, 255, 153, 0.35);
+  color: #00ff99;
+  font-size: 0.48rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 48px;
+}
+
 .key-colour {
   width: 18px;
   height: 8px;
