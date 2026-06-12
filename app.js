@@ -806,8 +806,27 @@ function renderMainMonthView() {
 
   const calendarGrid = document.createElement("div");
   calendarGrid.className = "calendar-grid";
+  const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+  weekDays.forEach((dayName) => {
+    const dayHeader = document.createElement("div");
+    dayHeader.className = "calendar-day-header";
+    dayHeader.textContent = dayName;
+    calendarGrid.appendChild(dayHeader);
+  });
 
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+  const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+  // JavaScript gives Sunday = 0, Monday = 1, Tuesday = 2, etc.
+  // This converts it so Monday = 0, Tuesday = 1, ... Sunday = 6.
+  const startOffset = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
+
+  for (let i = 0; i < startOffset; i++) {
+    const emptyCell = document.createElement("div");
+    emptyCell.className = "calendar-cell empty-day spacer-cell";
+    calendarGrid.appendChild(emptyCell);
+  }
 
   for (let day = 1; day <= daysInMonth; day++) {
     const dateLabel = `${day} ${monthNames[currentMonth]} ${currentYear}`;

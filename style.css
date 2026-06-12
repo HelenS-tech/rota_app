@@ -309,6 +309,14 @@ This will make the main calendar lo
   overflow-x: auto;
 }
 
+.calendar-day-header {
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: #ffffff;
+  padding: 4px 0;
+}
+
 .calendar-weekdays,
 .calendar-grid {
   display: grid;
@@ -602,6 +610,10 @@ This will make the main calendar lo
 
 .pizza-key {
   background: #ff7a1a;
+}
+
+.spacer-cell {
+  visibility: hidden;
 }
 
 .calendar-grid {
