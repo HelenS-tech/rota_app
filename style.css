@@ -747,6 +747,72 @@ This will make the main calendar lo
   background: #f97316;
 }
 
+.main-month-view {
+  width: 100%;
+  max-width: 760px;
+  margin: 1.5rem auto;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(70px, 1fr));
+  gap: 6px;
+  min-width: 520px;
+}
+
+.calendar-cell {
+  min-height: 92px;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+.overview-shift-bar {
+  min-height: 15px;
+  line-height: 15px;
+  font-size: 0.58rem;
+  padding: 0 3px;
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 0.5rem;
+  }
+
+  .logo {
+    max-width: 260px;
+  }
+
+  .main-month-header {
+    grid-template-columns: auto 1fr auto;
+    gap: 8px;
+  }
+
+  .main-month-title {
+    font-size: 1.5rem;
+  }
+
+  .main-month-header button {
+    font-size: 0.75rem;
+    padding: 8px 10px;
+    white-space: nowrap;
+  }
+
+  .calendar-day-header {
+    font-size: 0.7rem;
+  }
+
+  .calendar-grid {
+    grid-template-columns: repeat(7, 72px);
+    min-width: 540px;
+  }
+
+  .calendar-cell {
+    min-height: 92px;
+  }
+}
+
 /* Phone layout */
 @media (max-width: 700px) {
   .logo {
