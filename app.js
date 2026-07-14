@@ -202,6 +202,74 @@ async function loadShiftsFromSupabase() {
   updateUnclaimedShiftAlert();
 }
 
+async function ensureClaimScheduleExists(year, month) {
+  console.log("Checking claim schedule for:", year, month);
+  const { data: existingRows, error: checkError } = await supabaseClient
+    .from("claim_schedule")
+    .select("staff_name")
+    .eq("year", year)
+    .eq("month", month);
+
+  if (checkError) {
+    console.error("Error checking claim schedule:", checkError);
+    return;
+  }
+
+  if (existingRows && existingRows.length > 0) {
+    return;
+  }
+
+  const rowsToCreate = [
+    {
+      staff_name: "Jez Stone",
+      completed: false,
+      year,
+      month,
+    },
+    {
+      staff_name: "Rachel Wade",
+      completed: false,
+      year,
+      month,
+    },
+    {
+      staff_name: "Richard H",
+      completed: false,
+      year,
+      month,
+    },
+    {
+      staff_name: "All",
+      completed: false,
+      year,
+      month,
+    },
+  ];
+
+  const { error: insertError } = await supabaseClient
+    .from("claim_schedule")
+    .insert(rowsToCreate);
+
+  if (insertError) {
+    console.error("Error creating claim schedule:", insertError);
+  } else {
+    console.log("Created claim schedule for:", year, month);
+  }
+}
+
+async function startApp() {
+  await ensureClaimScheduleExists(currentYear, currentMonth);
+  await loadClaimSchedule();
+  await loadMonthRelease();
+
+  updateClaimStatus();
+  updateFinishedButton();
+
+  await loadShiftsFromSupabase();
+  updateCancelledShiftAlert();
+  updateUnclaimedShiftAlert();
+}
+
 async function loadClaimSchedule() {
   const { data, error } = await supabaseClient
     .from("claim_schedule")
@@ -449,7 +517,7 @@ function renderShifts() {
 
   shiftsDiv.appendChild(controls);
 
-  document.getElementById("prevMonth").addEventListener("click", () => {
+  document.getElementById("prevMonth").addEventListener("click", async () => {
     currentMonth--;
 
     if (currentMonth < 0) {
@@ -458,14 +526,19 @@ function renderShifts() {
     }
 
     selectedWeek = 1;
-    loadClaimSchedule().then(() => {
-      updateClaimStatus();
-      updateFinishedButton();
-      loadShiftsFromSupabase();
-    });
+
+    await ensureClaimScheduleExists(currentYear, currentMonth);
+    await loadClaimSchedule();
+
+    updateClaimStatus();
+    updateFinishedButton();
+
+    await loadShiftsFromSupabase();
   });
 
-  document.getElementById("nextMonth").addEventListener("click", () => {
+  document
+  .getElementById("nextMonth")
+  .addEventListener("click", async () => {
     currentMonth++;
 
     if (currentMonth > 11) {
@@ -474,12 +547,17 @@ function renderShifts() {
     }
 
     selectedWeek = 1;
-    loadClaimSchedule().then(() => {
-      updateClaimStatus();
-      updateFinishedButton();
-      loadShiftsFromSupabase();
-    });
-  });
+
+    console.log("NEXT MONTH CLICKED:", currentYear, currentMonth);
+
+    await ensureClaimScheduleExists(currentYear, currentMonth);
+    await loadClaimSchedule();
+
+    updateClaimStatus();
+    updateFinishedButton();
+
+    await loadShiftsFromSupabase();
+      });
 
   document
     .getElementById("overviewBtn")
@@ -996,22 +1074,48 @@ function showDayShiftPopup(dateLabel, dayShifts) {
 }
 
 async function markFinishedChoosing() {
-  console.log("Finished choosing clicked by:", selectedStaff, currentYear, currentMonth);
+  console.log(
+    "Finished choosing clicked by:",
+    selectedStaff,
+    currentYear,
+    currentMonth,
+  );
   if (!selectedStaff) {
     alert("Please choose your name first.");
     return;
   }
 
-  const { error } = await supabaseClient
+  const { data, error } = await supabaseClient
     .from("claim_schedule")
     .update({ completed: true })
     .eq("staff_name", selectedStaff)
     .eq("year", currentYear)
-    .eq("month", currentMonth);
+    .eq("month", currentMonth)
+    .select();
+
+  console.log("Finished update result:", {
+    data,
+    error,
+    selectedStaff,
+    currentYear,
+    currentMonth,
+  });
 
   if (error) {
     console.error("Error marking finished:", error);
     alert("There was a problem saving this.");
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    console.error(
+      "No claim_schedule row found:",
+      selectedStaff,
+      currentYear,
+      currentMonth,
+    );
+
+    alert(`No claiming record exists for ${selectedStaff} for this month.`);
     return;
   }
 
